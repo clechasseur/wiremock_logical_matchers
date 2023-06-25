@@ -3,41 +3,8 @@ name: MSRV
 on: [ push ]
 
 jobs:
-  rust-compute-matrix-config:
-    name: Fetch list of packages in workspace to generate matrix config for next job
-    runs-on: ubuntu-latest
-    outputs:
-      matrix-config: ${{ steps.generate-matrix.outputs.matrix-config }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Extract list of packages in workspace
-        id: save-packages
-        run: |
-          CARGO_METADATA=$(cargo metadata --no-deps --format-version 1 --locked)
-          PACKAGES=$(jq '[.packages | .[] | .name]' --compact-output <<< "$CARGO_METADATA")
-          ESCAPED_PACKAGES=$(sed 's/"/\\"/g' <<< "$PACKAGES")
-          echo "packages=$ESCAPED_PACKAGES" >> $GITHUB_OUTPUT
-
-      - name: Output list of packages
-        run: 'echo "::notice file=Cargo.toml::List of packages: ${{ steps.save-packages.outputs.packages }}"'
-
-      - name: Generate matrix configuration
-        id: generate-matrix
-        run: |
-          MATRIX_CONFIG="{\"package\":${{ steps.save-packages.outputs.packages }}}"
-          echo "matrix-config=$MATRIX_CONFIG" >> $GITHUB_OUTPUT
-
   rust-msrv:
-    needs: rust-compute-matrix-config
     name: Compute minimum supported Rust version
-    strategy:
-      fail-fast: false
-      matrix: ${{ fromJSON(needs.rust-compute-matrix-config.outputs.matrix-config) }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -60,24 +27,24 @@ jobs:
         run: |
           pip3 install toml-cli
 
-      - name: Compute minimum supported Rust version for package ${{ matrix.package }}
+      - name: Compute minimum supported Rust version
         id: msrv
         run: |
-          cp ${{ matrix.package }}/Cargo.toml ${{ matrix.package }}/Cargo.toml.bak
-          toml unset --toml-path ${{ matrix.package }}/Cargo.toml package.rust-version
-          MSRV_RESULT=$(cargo msrv --output-format json -- cargo check --package "${{ matrix.package }}" --all-targets --all-features | tail -1)
+          cp Cargo.toml Cargo.toml.bak
+          toml unset --toml-path Cargo.toml package.rust-version
+          MSRV_RESULT=$(cargo msrv --output-format json -- cargo check --all-targets --all-features | tail -1)
           MSRV=$(echo $MSRV_RESULT | jq -r '.msrv')
           echo "msrv=$MSRV" >> $GITHUB_OUTPUT
-          mv -f ${{ matrix.package }}/Cargo.toml.bak ${{ matrix.package }}/Cargo.toml
+          mv -f Cargo.toml.bak Cargo.toml
 
       - name: Output minimum supported Rust version
-        run: 'echo "::notice file=${{ matrix.package }}/Cargo.toml::MSRV for package ${{ matrix.package }} is ${{ steps.msrv.outputs.msrv }}"'
+        run: 'echo "::notice file=Cargo.toml::MSRV is ${{ steps.msrv.outputs.msrv }}"'
 
       - name: Make sure minimum supported Rust version matches that specified in Cargo.toml
         run: |
           CARGO_METADATA=$(cargo metadata --no-deps --format-version 1 --locked)
-          PACKAGE_MSRV=$(jq '.packages | .[] | select(.name == "${{ matrix.package }}") | .rust_version' --raw-output <<< "$CARGO_METADATA")
+          PACKAGE_MSRV=$(jq '.packages | .[] | select(.name == "wiremock_logical_matchers") | .rust_version' --raw-output <<< "$CARGO_METADATA")
           if [[ "$PACKAGE_MSRV" != "${{ steps.msrv.outputs.msrv }}" ]]; then
-            echo "::error file=${{ matrix.package }}/Cargo.toml::MSRV for package ${{ matrix.package }} is ${{ steps.msrv.outputs.msrv }}, but found mismatch: $PACKAGE_MSRV"
+            echo "::error file=Cargo.toml::MSRV is ${{ steps.msrv.outputs.msrv }}, but found mismatch: $PACKAGE_MSRV"
             exit 1
           fi

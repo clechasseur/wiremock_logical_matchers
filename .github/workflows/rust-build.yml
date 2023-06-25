@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        toolchain: [ 1.68.2, stable, beta, nightly ]
+        toolchain: [ 1.31.1, stable, beta, nightly ]
         os: [ ubuntu, macos, windows ]
         include:
           - experimental: false
