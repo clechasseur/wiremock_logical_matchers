@@ -1,0 +1,21 @@
+[package]
+name = "wiremock_logical_matchers"
+version = "0.1.0"
+authors = [ "Charles Lechasseur <shiftingbeard@gmx.com>" ]
+edition = "2018"
+rust-version = "1.31.0"
+
+readme = "README.md"
+license = "MIT"
+license-file = "LICENSE"
+
+repository = "https://github.com/clechasseur/wiremock_logical_matchers"
+documentation = "https://docs.rs/wiremock_logical_matchers/"
+
+description = "Logical matchers for use with wiremock."
+
+keywords = [ "test", "http", "mocking", "mock", "wiremock" ]
+categories = [ "development-tools", "asynchronous" ]
+
+[dependencies]
+wiremock = "0.5.19"
