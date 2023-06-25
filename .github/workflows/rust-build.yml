@@ -8,7 +8,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        toolchain: [ 1.31.1, stable, beta, nightly ]
+        toolchain: [ stable, beta, nightly ]
         os: [ ubuntu, macos, windows ]
         include:
           - experimental: false
@@ -46,13 +46,13 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: check
-          args: --workspace --all-targets --all-features
+          args: --all-targets --all-features
 
       - name: Run tests
         uses: actions-rs/cargo@v1
         with:
           command: test
-          args: --workspace --all-features
+          args: --all-features
 
       - name: Run build
         uses: actions-rs/cargo@v1

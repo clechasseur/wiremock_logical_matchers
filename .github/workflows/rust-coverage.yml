@@ -27,7 +27,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: tarpaulin
-          args: --verbose --workspace --all-features --out Xml
+          args: --verbose --lib --out Xml
 
       - name: Upload code coverage results to codecov.io
         uses: codecov/codecov-action@v3
