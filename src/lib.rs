@@ -45,39 +45,40 @@
 //!
 //! [wiremock on crates.io](https://crates.io/crates/wiremock)
 
+use std::fmt::{Debug, Formatter};
 use wiremock::{Match, Request};
 
 /// Shorthand for [AndMatcher].
-pub fn and<'a, 'b, L, R>(left_matcher: L, right_matcher: R) -> AndMatcher<'a, 'b>
+pub fn and<L, R>(left_matcher: L, right_matcher: R) -> AndMatcher<L, R>
 where
-    L: Match + 'a,
-    R: Match + 'b,
+    L: Match,
+    R: Match
 {
     AndMatcher::new(left_matcher, right_matcher)
 }
 
 /// Shorthand for [OrMatcher].
-pub fn or<'a, 'b, L, R>(left_matcher: L, right_matcher: R) -> OrMatcher<'a, 'b>
+pub fn or<L, R>(left_matcher: L, right_matcher: R) -> OrMatcher<L, R>
 where
-    L: Match + 'a,
-    R: Match + 'b,
+    L: Match,
+    R: Match
 {
     OrMatcher::new(left_matcher, right_matcher)
 }
 
 /// Shorthand for [XorMatcher].
-pub fn xor<'a, 'b, L, R>(left_matcher: L, right_matcher: R) -> XorMatcher<'a, 'b>
+pub fn xor<L, R>(left_matcher: L, right_matcher: R) -> XorMatcher<L, R>
 where
-    L: Match + 'a,
-    R: Match + 'b,
+    L: Match,
+    R: Match
 {
     XorMatcher::new(left_matcher, right_matcher)
 }
 
 /// Shorthand for [NotMatcher].
-pub fn not<'a, M>(matcher: M) -> NotMatcher<'a>
+pub fn not<M>(matcher: M) -> NotMatcher<M>
 where
-    M: Match + 'a,
+    M: Match
 {
     NotMatcher::new(matcher)
 }
@@ -135,9 +136,20 @@ where
 ///     // ...
 /// }
 /// ```
-pub struct AndMatcher<'a, 'b>(Box<dyn Match + 'a>, Box<dyn Match + 'b>);
+///
+/// # See also
+///
+/// [and]
+pub struct AndMatcher<L, R>(L, R)
+where
+    L: Match,
+    R: Match;
 
-impl<'a, 'b> AndMatcher<'a, 'b> {
+impl<L, R> AndMatcher<L, R>
+where
+    L: Match,
+    R: Match
+{
     /// Creates a new `AND` matcher with the two given submatchers.
     ///
     /// # Arguments
@@ -145,18 +157,35 @@ impl<'a, 'b> AndMatcher<'a, 'b> {
     /// - `left_matcher` - First submatcher that must accept the request.
     /// - `right_matcher` - Second submatcher that must accept the request.
     ///                     Called only if the first submatcher also accepts the request.
-    pub fn new<L, R>(left_matcher: L, right_matcher: R) -> Self
-    where
-        L: Match + 'a,
-        R: Match + 'b,
-    {
-        Self(Box::new(left_matcher), Box::new(right_matcher))
+    ///
+    /// # See also
+    ///
+    /// [and]
+    pub fn new(left_matcher: L, right_matcher: R) -> Self {
+        Self(left_matcher, right_matcher)
     }
 }
 
-impl<'a, 'b> Match for AndMatcher<'a, 'b> {
+impl<L, R> Match for AndMatcher<L, R>
+where
+    L: Match,
+    R: Match
+{
     fn matches(&self, request: &Request) -> bool {
         self.0.matches(request) && self.1.matches(request)
+    }
+}
+
+impl<L, R> Debug for AndMatcher<L, R>
+where
+    L: Match + Debug,
+    R: Match + Debug
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.debug_tuple("AndMatcher")
+            .field(&self.0)
+            .field(&self.1)
+            .finish()
     }
 }
 
@@ -184,9 +213,20 @@ impl<'a, 'b> Match for AndMatcher<'a, 'b> {
 ///     // ...
 /// }
 /// ```
-pub struct OrMatcher<'a, 'b>(Box<dyn Match + 'a>, Box<dyn Match + 'b>);
+///
+/// # See also
+///
+/// [or]
+pub struct OrMatcher<L, R>(L, R)
+where
+    L: Match,
+    R: Match;
 
-impl<'a, 'b> OrMatcher<'a, 'b> {
+impl<L, R> OrMatcher<L, R>
+where
+    L: Match,
+    R: Match
+{
     /// Creates a new `OR` matcher with the two given submatchers.
     ///
     /// # Arguments
@@ -194,18 +234,35 @@ impl<'a, 'b> OrMatcher<'a, 'b> {
     /// - `left_matcher` - First submatcher that can accept the request.
     /// - `right_matcher` - Second submatcher that can accept the request.
     ///                     Called only if the first submatcher does not accept the request.
-    pub fn new<L, R>(left_matcher: L, right_matcher: R) -> Self
-    where
-        L: Match + 'a,
-        R: Match + 'b,
-    {
-        Self(Box::new(left_matcher), Box::new(right_matcher))
+    ///
+    /// # See also
+    ///
+    /// [or]
+    pub fn new(left_matcher: L, right_matcher: R) -> Self {
+        Self(left_matcher, right_matcher)
     }
 }
 
-impl<'a, 'b> Match for OrMatcher<'a, 'b> {
+impl<L, R> Match for OrMatcher<L, R>
+where
+    L: Match,
+    R: Match
+{
     fn matches(&self, request: &Request) -> bool {
         self.0.matches(request) || self.1.matches(request)
+    }
+}
+
+impl<L, R> Debug for OrMatcher<L, R>
+where
+    L: Match + Debug,
+    R: Match + Debug
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.debug_tuple("OrMatcher")
+            .field(&self.0)
+            .field(&self.1)
+            .finish()
     }
 }
 
@@ -230,27 +287,55 @@ impl<'a, 'b> Match for OrMatcher<'a, 'b> {
 ///     // ...
 /// }
 /// ```
-pub struct XorMatcher<'a, 'b>(Box<dyn Match + 'a>, Box<dyn Match + 'b>);
+///
+/// # See also
+///
+/// [xor]
+pub struct XorMatcher<L, R>(L, R)
+where
+    L: Match,
+    R: Match;
 
-impl<'a, 'b> XorMatcher<'a, 'b> {
+impl<L, R> XorMatcher<L, R>
+where
+    L: Match,
+    R: Match
+{
     /// Creates a new `XOR` (exclusive `OR`) matcher with the two given submatchers.
     ///
     /// # Arguments
     ///
     /// - `left_matcher` - First submatcher that can accept the request.
     /// - `right_matcher` - Second submatcher that can accept the request.
-    pub fn new<L, R>(left_matcher: L, right_matcher: R) -> Self
-    where
-        L: Match + 'a,
-        R: Match + 'b,
-    {
-        Self(Box::new(left_matcher), Box::new(right_matcher))
+    ///
+    /// # See also
+    ///
+    /// [xor]
+    pub fn new(left_matcher: L, right_matcher: R) -> Self {
+        Self(left_matcher, right_matcher)
     }
 }
 
-impl<'a, 'b> Match for XorMatcher<'a, 'b> {
+impl<L, R> Match for XorMatcher<L, R>
+where
+    L: Match,
+    R: Match
+{
     fn matches(&self, request: &Request) -> bool {
         self.0.matches(request) != self.1.matches(request)
+    }
+}
+
+impl<L, R> Debug for XorMatcher<L, R>
+where
+    L: Match + Debug,
+    R: Match + Debug
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.debug_tuple("XorMatcher")
+            .field(&self.0)
+            .field(&self.1)
+            .finish()
     }
 }
 
@@ -275,24 +360,48 @@ impl<'a, 'b> Match for XorMatcher<'a, 'b> {
 ///     // ...
 /// }
 /// ```
-pub struct NotMatcher<'a>(Box<dyn Match + 'a>);
+///
+/// # See also
+///
+/// [not]
+pub struct NotMatcher<M>(M)
+where
+    M: Match;
 
-impl<'a> NotMatcher<'a> {
+impl<M> NotMatcher<M>
+where
+    M: Match
+{
     /// Creates a new `NOT` matcher with the given submatcher.
     ///
     /// # Arguments
     ///
     /// - `matcher` - Submatcher that must not accept the request.
-    pub fn new<M>(matcher: M) -> Self
-    where
-        M: Match + 'a,
-    {
-        Self(Box::new(matcher))
+    ///
+    /// # See also
+    ///
+    /// [not]
+    pub fn new(matcher: M) -> Self {
+        Self(matcher)
     }
 }
 
-impl<'a> Match for NotMatcher<'a> {
+impl<M> Match for NotMatcher<M>
+where
+    M: Match
+{
     fn matches(&self, request: &Request) -> bool {
         !self.0.matches(request)
+    }
+}
+
+impl<M> Debug for NotMatcher<M>
+where
+    M: Match + Debug
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.debug_tuple("NotMatcher")
+            .field(&self.0)
+            .finish()
     }
 }
