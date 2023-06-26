@@ -19,5 +19,5 @@ categories = [ "development-tools", "asynchronous" ]
 wiremock = "0"
 
 [dev-dependencies]
-async-std = { version = "1.12.0", features = ["attributes"] }
+async-std = { version = "1.12.0", features = ["attributes", "tokio1"] }
 reqwest = "0.11.18"

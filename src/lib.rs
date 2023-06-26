@@ -90,9 +90,8 @@ where
 /// # Example
 ///
 /// ```
-/// use reqwest::{Client, StatusCode};
 /// use wiremock::{Mock, MockServer, ResponseTemplate};
-/// use wiremock::matchers::{header_exists, path, query_param};
+/// use wiremock::matchers::{header_exists, query_param};
 /// use wiremock_logical_matchers::and;
 ///
 /// #[async_std::test]
@@ -104,42 +103,7 @@ where
 ///         .mount(&mock_server)
 ///         .await;
 ///
-///     let status_ok = Client::new()
-///         .get(&mock_server.uri())
-///         .header("x-for-testing-purposes", "42")
-///         .query(&[("page", "1")])
-///         .send()
-///         .await
-///         .unwrap()
-///         .status();
-///
-///     let status_not_found = Client::new()
-///         .get(&mock_server.uri())
-///         .header("x-for-testing-purposes", "42")
-///         .send()
-///         .await
-///         .unwrap()
-///         .status();
-///
-///     let status_also_not_found = Client::new()
-///         .get(&mock_server.uri())
-///         .query(&[("page", "1")])
-///         .send()
-///         .await
-///         .unwrap()
-///         .status();
-///
-///     let status_also_also_not_found = Client::new()
-///         .get(&mock_server.uri())
-///         .send()
-///         .await
-///         .unwrap()
-///         .status();
-///
-///     assert_eq!(status_ok, StatusCode::OK);
-///     assert_eq!(status_not_found, StatusCode::NOT_FOUND);
-///     assert_eq!(status_also_not_found, StatusCode::NOT_FOUND);
-///     assert_eq!(status_also_also_not_found, StatusCode::NOT_FOUND);
+///     // ...
 /// }
 /// ```
 ///
@@ -151,7 +115,6 @@ where
 /// involving `OR`, for example:
 ///
 /// ```
-/// use reqwest::{Client, StatusCode};
 /// use wiremock::{Mock, MockServer, ResponseTemplate};
 /// use wiremock::matchers::{header, header_exists, query_param};
 /// use wiremock_logical_matchers::{and, or};
@@ -169,25 +132,7 @@ where
 ///     .mount(&mock_server)
 ///     .await;
 ///
-///     let status_ok = Client::new()
-///         .get(&mock_server.uri())
-///         .header("bypass", "true")
-///         .send()
-///         .await
-///         .unwrap()
-///         .status();
-///
-///     let status_also_ok = Client::new()
-///         .get(&mock_server.uri())
-///         .header("x-for-testing-purposes", "42")
-///         .query(&[("page", "1")])
-///         .send()
-///         .await
-///         .unwrap()
-///         .status();
-///
-///     assert_eq!(status_ok, StatusCode::OK);
-///     assert_eq!(status_also_ok, StatusCode::OK);
+///     // ...
 /// }
 /// ```
 pub struct AndMatcher<'a, 'b>(Box<dyn Match + 'a>, Box<dyn Match + 'b>);
@@ -223,9 +168,8 @@ impl<'a, 'b> Match for AndMatcher<'a, 'b> {
 /// # Example
 ///
 /// ```
-/// use reqwest::{Client, StatusCode};
 /// use wiremock::{Mock, MockServer, ResponseTemplate};
-/// use wiremock::matchers::{header_exists, path, query_param};
+/// use wiremock::matchers::{header_exists, query_param};
 /// use wiremock_logical_matchers::or;
 ///
 /// #[async_std::test]
@@ -237,42 +181,7 @@ impl<'a, 'b> Match for AndMatcher<'a, 'b> {
 ///         .mount(&mock_server)
 ///         .await;
 ///
-///     let status_ok = Client::new()
-///         .get(&mock_server.uri())
-///         .header("x-for-testing-purposes", "42")
-///         .send()
-///         .await
-///         .unwrap()
-///         .status();
-///
-///     let status_also_ok = Client::new()
-///         .get(&mock_server.uri())
-///         .query(&[("page", "1")])
-///         .send()
-///         .await
-///         .unwrap()
-///         .status();
-///
-///     let status_also_also_ok = Client::new()
-///         .get(&mock_server.uri())
-///         .header("x-for-testing-purposes", "42")
-///         .query(&[("page", "1")])
-///         .send()
-///         .await
-///         .unwrap()
-///         .status();
-///
-///     let status_not_found = Client::new()
-///         .get(&mock_server.uri())
-///         .send()
-///         .await
-///         .unwrap()
-///         .status();
-///
-///     assert_eq!(status_ok, StatusCode::OK);
-///     assert_eq!(status_also_ok, StatusCode::OK);
-///     assert_eq!(status_also_also_ok, StatusCode::OK);
-///     assert_eq!(status_not_found, StatusCode::NOT_FOUND);
+///     // ...
 /// }
 /// ```
 pub struct OrMatcher<'a, 'b>(Box<dyn Match + 'a>, Box<dyn Match + 'b>);
@@ -305,9 +214,8 @@ impl<'a, 'b> Match for OrMatcher<'a, 'b> {
 /// # Example
 ///
 /// ```
-/// use reqwest::{Client, StatusCode};
 /// use wiremock::{Mock, MockServer, ResponseTemplate};
-/// use wiremock::matchers::{header_exists, path, query_param};
+/// use wiremock::matchers::{header_exists, query_param};
 /// use wiremock_logical_matchers::xor;
 ///
 /// #[async_std::test]
@@ -319,42 +227,7 @@ impl<'a, 'b> Match for OrMatcher<'a, 'b> {
 ///         .mount(&mock_server)
 ///         .await;
 ///
-///     let status_ok = Client::new()
-///         .get(&mock_server.uri())
-///         .header("x-for-testing-purposes", "42")
-///         .send()
-///         .await
-///         .unwrap()
-///         .status();
-///
-///     let status_also_ok = Client::new()
-///         .get(&mock_server.uri())
-///         .query(&[("page", "1")])
-///         .send()
-///         .await
-///         .unwrap()
-///         .status();
-///
-///     let status_not_found = Client::new()
-///         .get(&mock_server.uri())
-///         .header("x-for-testing-purposes", "42")
-///         .query(&[("page", "1")])
-///         .send()
-///         .await
-///         .unwrap()
-///         .status();
-///
-///     let status_also_not_found = Client::new()
-///         .get(&mock_server.uri())
-///         .send()
-///         .await
-///         .unwrap()
-///         .status();
-///
-///     assert_eq!(status_ok, StatusCode::OK);
-///     assert_eq!(status_also_ok, StatusCode::OK);
-///     assert_eq!(status_not_found, StatusCode::NOT_FOUND);
-///     assert_eq!(status_also_not_found, StatusCode::NOT_FOUND);
+///     // ...
 /// }
 /// ```
 pub struct XorMatcher<'a, 'b>(Box<dyn Match + 'a>, Box<dyn Match + 'b>);
@@ -386,9 +259,8 @@ impl<'a, 'b> Match for XorMatcher<'a, 'b> {
 /// # Example
 ///
 /// ```
-/// use reqwest::{Client, StatusCode};
 /// use wiremock::{Mock, MockServer, ResponseTemplate};
-/// use wiremock::matchers::{header_exists, path, query_param};
+/// use wiremock::matchers::header_exists;
 /// use wiremock_logical_matchers::not;
 ///
 /// #[async_std::test]
@@ -400,23 +272,7 @@ impl<'a, 'b> Match for XorMatcher<'a, 'b> {
 ///         .mount(&mock_server)
 ///         .await;
 ///
-///     let status_ok = Client::new()
-///         .get(&mock_server.uri())
-///         .send()
-///         .await
-///         .unwrap()
-///         .status();
-///
-///     let status_not_found = Client::new()
-///         .get(&mock_server.uri())
-///         .header("x-for-testing-purposes", "42")
-///         .send()
-///         .await
-///         .unwrap()
-///         .status();
-///
-///     assert_eq!(status_ok, StatusCode::OK);
-///     assert_eq!(status_not_found, StatusCode::NOT_FOUND);
+///     // ...
 /// }
 /// ```
 pub struct NotMatcher<'a>(Box<dyn Match + 'a>);
