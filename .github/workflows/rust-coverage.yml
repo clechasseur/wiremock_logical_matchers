@@ -31,8 +31,9 @@ jobs:
 
       - name: Upload code coverage results to codecov.io
         uses: codecov/codecov-action@v3
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
 
       - name: Archive code coverage results
         uses: actions/upload-artifact@v1
