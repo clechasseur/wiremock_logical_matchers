@@ -34,7 +34,7 @@ where
     }
 }
 
-pub struct NotDebugMatcher;
+pub struct NotDebugMatcher(pub usize);
 
 impl Match for NotDebugMatcher {
     fn matches(&self, _request: &Request) -> bool {
@@ -43,7 +43,7 @@ impl Match for NotDebugMatcher {
 }
 
 #[derive(Debug)]
-pub struct DebugMatcher;
+pub struct DebugMatcher(pub usize);
 
 impl Match for DebugMatcher {
     fn matches(&self, _request: &Request) -> bool {
@@ -61,7 +61,7 @@ macro_rules! test_dual_matcher_debug {
 
                 #[test]
                 fn test_both_debug() {
-                    let both_debug = $matcher::new($crate::helpers::DebugMatcher, $crate::helpers::DebugMatcher);
+                    let both_debug = $matcher::new($crate::helpers::DebugMatcher(42), $crate::helpers::DebugMatcher(23));
                     let debug_test = $crate::helpers::DebugTest(both_debug);
                     let actual = (&debug_test).debug_if_possible();
                     assert_eq!(actual.is_empty(), false,
@@ -70,7 +70,7 @@ macro_rules! test_dual_matcher_debug {
 
                 #[test]
                 fn test_left_debug() {
-                    let left_debug = $matcher::new($crate::helpers::DebugMatcher, $crate::helpers::NotDebugMatcher);
+                    let left_debug = $matcher::new($crate::helpers::DebugMatcher(42), $crate::helpers::NotDebugMatcher(23));
                     let debug_test = $crate::helpers::DebugTest(left_debug);
                     let actual = (&debug_test).debug_if_possible();
                     assert_eq!(actual.is_empty(), true,
@@ -79,7 +79,7 @@ macro_rules! test_dual_matcher_debug {
 
                 #[test]
                 fn test_right_debug() {
-                    let right_debug = $matcher::new($crate::helpers::NotDebugMatcher, $crate::helpers::DebugMatcher);
+                    let right_debug = $matcher::new($crate::helpers::NotDebugMatcher(42), $crate::helpers::DebugMatcher(23));
                     let debug_test = $crate::helpers::DebugTest(right_debug);
                     let actual = (&debug_test).debug_if_possible();
                     assert_eq!(actual.is_empty(), true,
@@ -88,7 +88,7 @@ macro_rules! test_dual_matcher_debug {
 
                 #[test]
                 fn test_no_debug() {
-                    let no_debug = $matcher::new($crate::helpers::NotDebugMatcher, $crate::helpers::NotDebugMatcher);
+                    let no_debug = $matcher::new($crate::helpers::NotDebugMatcher(42), $crate::helpers::NotDebugMatcher(23));
                     let debug_test = $crate::helpers::DebugTest(no_debug);
                     let actual = (&debug_test).debug_if_possible();
                     assert_eq!(actual.is_empty(), true,
@@ -109,7 +109,7 @@ macro_rules! test_single_matcher_debug {
 
                 #[test]
                 fn test_with_debug() {
-                    let with_debug = $matcher::new($crate::helpers::DebugMatcher);
+                    let with_debug = $matcher::new($crate::helpers::DebugMatcher(42));
                     let debug_test = $crate::helpers::DebugTest(with_debug);
                     let actual = (&debug_test).debug_if_possible();
                     assert_eq!(actual.is_empty(), false,
@@ -118,7 +118,7 @@ macro_rules! test_single_matcher_debug {
 
                 #[test]
                 fn test_without_debug() {
-                    let without_debug = $matcher::new($crate::helpers::NotDebugMatcher);
+                    let without_debug = $matcher::new($crate::helpers::NotDebugMatcher(23));
                     let debug_test = $crate::helpers::DebugTest(without_debug);
                     let actual = (&debug_test).debug_if_possible();
                     assert_eq!(actual.is_empty(), true,
