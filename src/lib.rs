@@ -21,7 +21,7 @@
 //!
 //! ```
 //! use wiremock::{Mock, MockServer, ResponseTemplate};
-//! use wiremock::matchers::{bearer_token, header, header_exists, path, query_param};
+//! use wiremock::matchers::{header, header_exists, path, query_param};
 //! use wiremock_logical_matchers::{and, not, or, xor};
 //!
 //! #[async_std::test]
@@ -30,7 +30,7 @@
 //!
 //!     Mock::given(path("/test"))
 //!         .and(and(header_exists("x-for-testing-purposes"), query_param("page", "1")))
-//!         .and(or(bearer_token("some_token"), query_param("override-security", "1")))
+//!         .and(or(header("authorization", "Bearer some_token"), query_param("override-security", "1")))
 //!         .and(xor(header("x-license", "MIT"), header("x-license-file", "LICENSE")))
 //!         .and(not(header_exists("x-voldemort")))
 //!         .respond_with(ResponseTemplate::new(200))
