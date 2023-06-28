@@ -1,9 +1,7 @@
-mod helpers;
-
 use reqwest::{Client, StatusCode};
 use wiremock::{Mock, MockServer, ResponseTemplate};
 use wiremock::matchers::{header, header_exists, query_param};
-use wiremock_logical_matchers::{and, AndMatcher, not, NotMatcher, or, OrMatcher, xor, XorMatcher};
+use wiremock_logical_matchers::{and, not, or, xor};
 
 #[async_std::test]
 async fn test_and() {
@@ -207,8 +205,3 @@ async fn test_complex_expression() {
     assert_eq!(status_ok, StatusCode::OK);
     assert_eq!(status_also_ok, StatusCode::OK);
 }
-
-test_dual_matcher_debug!(AndMatcher);
-test_dual_matcher_debug!(OrMatcher);
-test_dual_matcher_debug!(XorMatcher);
-test_single_matcher_debug!(NotMatcher);

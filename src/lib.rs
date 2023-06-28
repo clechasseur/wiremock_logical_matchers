@@ -6,7 +6,7 @@
 //!
 //! ```toml
 //! [dev-dependencies]
-//! # ...
+//! ## ...
 //! wiremock = "0.5.19"
 //! wiremock_logical_matchers = "0.1.0"
 //! ```
@@ -45,7 +45,8 @@
 //!
 //! [wiremock on crates.io](https://crates.io/crates/wiremock)
 
-use std::fmt::{Debug, Formatter};
+use std::fmt::Debug;
+use educe::Educe;
 use wiremock::{Match, Request};
 
 /// Shorthand for [AndMatcher].
@@ -140,6 +141,8 @@ where
 /// # See also
 ///
 /// [and]
+#[derive(Educe)]
+#[educe(Debug(bound = "L: Match + Debug, R: Match + Debug"))]
 pub struct AndMatcher<L, R>(L, R)
 where
     L: Match,
@@ -176,19 +179,6 @@ where
     }
 }
 
-impl<L, R> Debug for AndMatcher<L, R>
-where
-    L: Match + Debug,
-    R: Match + Debug
-{
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.debug_tuple("AndMatcher")
-            .field(&self.0)
-            .field(&self.1)
-            .finish()
-    }
-}
-
 /// Match a request if either submatchers accept it.
 ///
 /// This matcher is shortcircuiting: if the first submatcher accepts
@@ -217,6 +207,8 @@ where
 /// # See also
 ///
 /// [or]
+#[derive(Educe)]
+#[educe(Debug(bound = "L: Match + Debug, R: Match + Debug"))]
 pub struct OrMatcher<L, R>(L, R)
 where
     L: Match,
@@ -253,19 +245,6 @@ where
     }
 }
 
-impl<L, R> Debug for OrMatcher<L, R>
-where
-    L: Match + Debug,
-    R: Match + Debug
-{
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.debug_tuple("OrMatcher")
-            .field(&self.0)
-            .field(&self.1)
-            .finish()
-    }
-}
-
 /// Match a request if exactly one submatcher accepts it.
 ///
 /// # Example
@@ -291,6 +270,8 @@ where
 /// # See also
 ///
 /// [xor]
+#[derive(Educe)]
+#[educe(Debug(bound = "L: Match + Debug, R: Match + Debug"))]
 pub struct XorMatcher<L, R>(L, R)
 where
     L: Match,
@@ -326,19 +307,6 @@ where
     }
 }
 
-impl<L, R> Debug for XorMatcher<L, R>
-where
-    L: Match + Debug,
-    R: Match + Debug
-{
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.debug_tuple("XorMatcher")
-            .field(&self.0)
-            .field(&self.1)
-            .finish()
-    }
-}
-
 /// Match a request if the submatcher does not accept it.
 ///
 /// # Example
@@ -364,6 +332,8 @@ where
 /// # See also
 ///
 /// [not]
+#[derive(Educe)]
+#[educe(Debug(bound = "M: Match + Debug"))]
 pub struct NotMatcher<M>(M)
 where
     M: Match;
@@ -392,16 +362,5 @@ where
 {
     fn matches(&self, request: &Request) -> bool {
         !self.0.matches(request)
-    }
-}
-
-impl<M> Debug for NotMatcher<M>
-where
-    M: Match + Debug
-{
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.debug_tuple("NotMatcher")
-            .field(&self.0)
-            .finish()
     }
 }

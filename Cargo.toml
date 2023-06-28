@@ -16,6 +16,7 @@ keywords = [ "test", "http", "mocking", "mock", "wiremock" ]
 categories = [ "development-tools", "asynchronous" ]
 
 [dependencies]
+educe = { version = "0.4.1", features = ["Debug"], default-features = false }
 wiremock = "0"
 
 [dev-dependencies]
