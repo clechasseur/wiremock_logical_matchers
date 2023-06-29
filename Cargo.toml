@@ -18,8 +18,8 @@ categories = [ "development-tools", "asynchronous" ]
 include = [ "LICENSE", "README.md", "src/**/*", "tests/**/*" ]
 
 [dependencies]
-educe = { version = "0.4.1", features = ["Debug"], default-features = false }
-wiremock = "0.3.0"
+derivative = "2"
+wiremock = "0.3"
 
 [dev-dependencies]
 async-std = { version = "1.12.0", features = ["attributes", "tokio1"] }

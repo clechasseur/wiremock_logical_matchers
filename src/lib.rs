@@ -45,8 +45,7 @@
 //!
 //! [wiremock on crates.io](https://crates.io/crates/wiremock)
 
-use std::fmt::Debug;
-use educe::Educe;
+use derivative::Derivative;
 use wiremock::{Match, Request};
 
 /// Shorthand for [AndMatcher].
@@ -141,8 +140,8 @@ where
 /// # See also
 ///
 /// [and]
-#[derive(Educe)]
-#[educe(Debug(bound = "L: Match + Debug, R: Match + Debug"))]
+#[derive(Derivative)]
+#[derivative(Debug(bound = "L: Match + std::fmt::Debug, R: Match + std::fmt::Debug"))]
 pub struct AndMatcher<L, R>(L, R)
 where
     L: Match,
@@ -207,8 +206,8 @@ where
 /// # See also
 ///
 /// [or]
-#[derive(Educe)]
-#[educe(Debug(bound = "L: Match + Debug, R: Match + Debug"))]
+#[derive(Derivative)]
+#[derivative(Debug(bound = "L: Match + std::fmt::Debug, R: Match + std::fmt::Debug"))]
 pub struct OrMatcher<L, R>(L, R)
 where
     L: Match,
@@ -270,8 +269,8 @@ where
 /// # See also
 ///
 /// [xor]
-#[derive(Educe)]
-#[educe(Debug(bound = "L: Match + Debug, R: Match + Debug"))]
+#[derive(Derivative)]
+#[derivative(Debug(bound = "L: Match + std::fmt::Debug, R: Match + std::fmt::Debug"))]
 pub struct XorMatcher<L, R>(L, R)
 where
     L: Match,
@@ -332,8 +331,8 @@ where
 /// # See also
 ///
 /// [not]
-#[derive(Educe)]
-#[educe(Debug(bound = "M: Match + Debug"))]
+#[derive(Derivative)]
+#[derivative(Debug(bound = "M: Match + std::fmt::Debug"))]
 pub struct NotMatcher<M>(M)
 where
     M: Match;
