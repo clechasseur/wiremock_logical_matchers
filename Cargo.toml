@@ -19,7 +19,7 @@ include = [ "LICENSE", "README.md", "src/**/*", "tests/**/*" ]
 
 [dependencies]
 derivative = "2"
-wiremock = "0.3"
+wiremock = "0.5"
 
 [dev-dependencies]
 async-std = { version = "1.12.0", features = ["attributes", "tokio1"] }
