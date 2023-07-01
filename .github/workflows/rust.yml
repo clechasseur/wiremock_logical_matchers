@@ -1,12 +1,12 @@
-name: Build / tests / kitchen sink
+name: Rust
 
 on: [ push ]
 
 jobs:
-  rust-msrv:
+  msrv:
     # The goal of this job is simply to test whether the *lib* still builds with
     # a minimum Rust version of 1.60.0. We're not running tests or anything.
-    name: Rust MSRV validation for Rust ${{ matrix.toolchain }} on ${{ matrix.os }}
+    name: MSRV validation for Rust ${{ matrix.toolchain }} on ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
@@ -22,19 +22,14 @@ jobs:
         with:
           toolchain: ${{ matrix.toolchain }}
 
-      - name: Output Rust toolchain info
-        run: |
-          cargo --version --verbose
-          rustc --version
-
       - name: Run checks
         uses: actions-rs/cargo@v1
         with:
           command: check
           args: --all-features
 
-  rust-clippy:
-    name: Rust clippy validation
+  clippy:
+    name: Clippy validation
     runs-on: ubuntu-latest
     permissions:
       checks: write
@@ -59,8 +54,8 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --all-targets --all-features -- -D warnings
 
-  rust-build:
-    name: Rust release build for Rust ${{ matrix.toolchain }} on ${{ matrix.os }}${{ matrix.experimental && ' (experimental)' || '' }}${{ matrix.ignore-lock && ' without Cargo.lock' || '' }}
+  build:
+    name: Release build for Rust ${{ matrix.toolchain }}${{ matrix.experimental && ' (experimental)' || '' }} on ${{ matrix.os }}${{ matrix.ignore-lock && ' without Cargo.lock' || '' }}
     strategy:
       fail-fast: false
       matrix:
@@ -99,8 +94,8 @@ jobs:
           command: build
           args: --all-features --release
 
-  rust-tests:
-    name: Rust tests for Rust ${{ matrix.toolchain }} on ${{ matrix.os }}${{ matrix.experimental && ' (experimental)' || '' }}${{ matrix.ignore-lock && ' without Cargo.lock' || '' }}
+  tests:
+    name: Tests for Rust ${{ matrix.toolchain }}${{ matrix.experimental && ' (experimental)' || '' }} on ${{ matrix.os }}${{ matrix.ignore-lock && ' without Cargo.lock' || '' }}
     strategy:
       fail-fast: false
       matrix:
@@ -145,8 +140,8 @@ jobs:
           command: test
           args: --all-features
 
-  rust-tarpaulin:
-    name: Rust code coverage
+  tarpaulin:
+    name: Code coverage
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -156,8 +151,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install cargo-binstall
-        run: |
-          curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+        run: curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
 
       - name: Install cargo-tarpaulin
         uses: actions-rs/cargo@v1
