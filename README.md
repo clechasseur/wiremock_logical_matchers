@@ -34,11 +34,26 @@ async fn test_getting_started() {
     let mock_server = MockServer::start().await;
 
     Mock::given(path("/test"))
-        .and(and(header_exists("x-for-testing-purposes"), query_param("page", "1")))
-        .and(or(header("authorization", "Bearer some_token"), query_param("override-security", "1")))
-        .and(xor(header("x-license", "MIT"), header("x-license-file", "LICENSE")))
-        .and(not(header_exists("x-voldemort")))
-        .respond_with(ResponseTemplate::new(200))
+        .and(
+            and(
+                header_exists("x-for-testing-purposes"),
+                query_param("page", "1")
+            )
+        ).and(
+            or(
+                header("authorization", "Bearer some_token"),
+                query_param("override-security", "1")
+            )
+        ).and(
+            xor(
+                header("x-license", "MIT"),
+                header("x-license-file", "LICENSE")
+            )
+        ).and(
+            not(
+                header_exists("x-voldemort")
+            )
+        ).respond_with(ResponseTemplate::new(200))
         .mount(&mock_server)
         .await;
 

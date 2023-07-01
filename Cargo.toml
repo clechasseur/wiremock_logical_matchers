@@ -7,6 +7,7 @@ edition = "2018"
 readme = "README.md"
 license = "MIT"
 
+homepage = "https://github.com/clechasseur/wiremock_logical_matchers#readme"
 repository = "https://github.com/clechasseur/wiremock_logical_matchers"
 documentation = "https://docs.rs/wiremock_logical_matchers/"
 

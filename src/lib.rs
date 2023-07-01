@@ -29,11 +29,26 @@
 //!     let mock_server = MockServer::start().await;
 //!
 //!     Mock::given(path("/test"))
-//!         .and(and(header_exists("x-for-testing-purposes"), query_param("page", "1")))
-//!         .and(or(header("authorization", "Bearer some_token"), query_param("override-security", "1")))
-//!         .and(xor(header("x-license", "MIT"), header("x-license-file", "LICENSE")))
-//!         .and(not(header_exists("x-voldemort")))
-//!         .respond_with(ResponseTemplate::new(200))
+//!         .and(
+//!             and(
+//!                 header_exists("x-for-testing-purposes"),
+//!                 query_param("page", "1")
+//!             )
+//!         ).and(
+//!             or(
+//!                 header("authorization", "Bearer some_token"),
+//!                 query_param("override-security", "1")
+//!             )
+//!         ).and(
+//!             xor(
+//!                 header("x-license", "MIT"),
+//!                 header("x-license-file", "LICENSE")
+//!             )
+//!         ).and(
+//!             not(
+//!                 header_exists("x-voldemort")
+//!             )
+//!         ).respond_with(ResponseTemplate::new(200))
 //!         .mount(&mock_server)
 //!         .await;
 //!
@@ -99,8 +114,12 @@ where
 /// async fn test_and() {
 ///     let mock_server = MockServer::start().await;
 ///
-///     Mock::given(and(header_exists("x-for-testing-purposes"), query_param("page", "1")))
-///         .respond_with(ResponseTemplate::new(200))
+///     Mock::given(
+///             and(
+///                 header_exists("x-for-testing-purposes"),
+///                 query_param("page", "1")
+///             )
+///         ).respond_with(ResponseTemplate::new(200))
 ///         .mount(&mock_server)
 ///         .await;
 ///
@@ -126,7 +145,10 @@ where
 ///
 ///     Mock::given(
 ///         or(
-///             and(header_exists("x-for-testing-purposes"), query_param("page", "1")),
+///             and(
+///                 header_exists("x-for-testing-purposes"),
+///                 query_param("page", "1")
+///             ),
 ///             header("x-bypass", "true")
 ///         )
 ///     ).respond_with(ResponseTemplate::new(200))
@@ -187,15 +209,19 @@ where
 ///
 /// ```
 /// use wiremock::{Mock, MockServer, ResponseTemplate};
-/// use wiremock::matchers::{header_exists, query_param};
+/// use wiremock::matchers::{header, query_param};
 /// use wiremock_logical_matchers::or;
 ///
 /// #[async_std::test]
 /// async fn test_or() {
 ///     let mock_server = MockServer::start().await;
 ///
-///     Mock::given(or(header_exists("x-for-testing-purposes"), query_param("page", "1")))
-///         .respond_with(ResponseTemplate::new(200))
+///     Mock::given(
+///             or(
+///                 header("authorization", "Bearer some_token"),
+///                 query_param("override-security", "1")
+///             )
+///         ).respond_with(ResponseTemplate::new(200))
 ///         .mount(&mock_server)
 ///         .await;
 ///
@@ -250,15 +276,19 @@ where
 ///
 /// ```
 /// use wiremock::{Mock, MockServer, ResponseTemplate};
-/// use wiremock::matchers::{header_exists, query_param};
+/// use wiremock::matchers::header;
 /// use wiremock_logical_matchers::xor;
 ///
 /// #[async_std::test]
 /// async fn test_xor() {
 ///     let mock_server = MockServer::start().await;
 ///
-///     Mock::given(xor(header_exists("x-for-testing-purposes"), query_param("page", "1")))
-///         .respond_with(ResponseTemplate::new(200))
+///     Mock::given(
+///             xor(
+///                 header("x-license", "MIT"),
+///                 header("x-license-file", "LICENSE")
+///             )
+///         ).respond_with(ResponseTemplate::new(200))
 ///         .mount(&mock_server)
 ///         .await;
 ///
@@ -319,8 +349,11 @@ where
 /// async fn test_not() {
 ///     let mock_server = MockServer::start().await;
 ///
-///     Mock::given(not(header_exists("x-for-testing-purposes")))
-///         .respond_with(ResponseTemplate::new(200))
+///     Mock::given(
+///             not(
+///                 header_exists("x-voldemort")
+///             )
+///         ).respond_with(ResponseTemplate::new(200))
 ///         .mount(&mock_server)
 ///         .await;
 ///
