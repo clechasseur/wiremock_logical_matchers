@@ -1,0 +1,156 @@
+name: Rust
+
+on: [ push ]
+
+jobs:
+  clippy:
+    name: Clippy validation
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Rust with clippy
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+
+      - name: Output Rust toolchain info
+        run: |
+          cargo --version --verbose
+          rustc --version
+          cargo clippy --version
+
+      - name: Run clippy
+        uses: actions-rs/clippy-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --all-targets --all-features -- -D warnings
+
+  build:
+    name: Release build for Rust ${{ matrix.toolchain }}${{ matrix.experimental && ' (experimental)' || '' }} on ${{ matrix.os }}${{ matrix.ignore-lock && ' without Cargo.lock' || '' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain: [ 1.60.0, 1.68.2, stable, beta, nightly ]
+        os: [ ubuntu, macos, windows ]
+        ignore-lock: [ false, true ]
+        include:
+          - experimental: false
+          - toolchain: beta
+            experimental: true
+          - toolchain: nightly
+            experimental: true
+        exclude:
+          - toolchain: 1.60.0
+            ignore-lock: true
+    runs-on: ${{ matrix.os }}-latest
+    continue-on-error: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Remove Cargo.lock
+        if: ${{ matrix.ignore-lock }}
+        run: rm Cargo.lock
+
+      - name: Install Rust toolchain ${{ matrix.toolchain }}
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.toolchain }}
+
+      - name: Output Rust toolchain info
+        run: |
+          cargo --version --verbose
+          rustc --version
+
+      - name: Run release build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --all-features --release
+
+  tests:
+    name: Tests for Rust ${{ matrix.toolchain }}${{ matrix.experimental && ' (experimental)' || '' }} on ${{ matrix.os }}${{ matrix.ignore-lock && ' without Cargo.lock' || '' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain: [ 1.68.2, stable, beta, nightly ]
+        os: [ ubuntu, macos, windows ]
+        ignore-lock: [ false, true ]
+        include:
+          - experimental: false
+          - toolchain: beta
+            experimental: true
+          - toolchain: nightly
+            experimental: true
+    runs-on: ${{ matrix.os }}-latest
+    continue-on-error: ${{ matrix.experimental }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Remove Cargo.lock
+        if: ${{ matrix.ignore-lock }}
+        run: rm Cargo.lock
+
+      - name: Install Rust toolchain ${{ matrix.toolchain }}
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.toolchain }}
+
+      - name: Output Rust toolchain info
+        run: |
+          cargo --version --verbose
+          rustc --version
+
+      - name: Run checks
+        uses: actions-rs/cargo@v1
+        with:
+          command: check
+          args: --all-targets --all-features
+
+      - name: Run tests
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --all-features
+
+  tarpaulin:
+    name: Code coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install cargo-binstall
+        run: curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+
+      - name: Install cargo-tarpaulin
+        uses: actions-rs/cargo@v1
+        with:
+          command: binstall
+          args: --no-confirm --no-symlinks cargo-tarpaulin
+
+      - name: Run cargo-tarpaulin
+        uses: actions-rs/cargo@v1
+        with:
+          command: tarpaulin
+          args: --engine llvm --tests --out Xml
+
+      - name: Upload code coverage results to codecov.io
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v1
+        with:
+          name: code-coverage-report
+          path: cobertura.xml
