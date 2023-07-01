@@ -1,4 +1,4 @@
-name: Security
+name: Security audit
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  audit:
+  audit-check:
     runs-on: ubuntu-latest
     permissions:
       checks: write
