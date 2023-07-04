@@ -11,9 +11,8 @@ Add `wiremock_logical_matchers` to your development dependencies:
 
 ```toml
 [dev-dependencies]
-# ...
 wiremock = "0.5.19"
-wiremock_logical_matchers = "0.1.0"
+wiremock_logical_matchers = "0.1.1"
 ```
 
 or by running:
