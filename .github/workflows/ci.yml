@@ -67,7 +67,7 @@ jobs:
           rustc --version
 
       - name: Run release build
-        uses: actions-rs/cargo@v1
+        uses: clechasseur/rs-cargo@v1
         with:
           command: build
           args: --all-features --release
@@ -107,13 +107,13 @@ jobs:
           rustc --version
 
       - name: Run checks
-        uses: actions-rs/cargo@v1
+        uses: clechasseur/rs-cargo@v1
         with:
           command: check
           args: --all-targets --all-features
 
       - name: Run tests
-        uses: actions-rs/cargo@v1
+        uses: clechasseur/rs-cargo@v1
         with:
           command: test
           args: --all-features
@@ -132,13 +132,13 @@ jobs:
         run: curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
 
       - name: Install cargo-tarpaulin
-        uses: actions-rs/cargo@v1
+        uses: clechasseur/rs-cargo@v1
         with:
           command: binstall
           args: --no-confirm --no-symlinks cargo-tarpaulin
 
       - name: Run cargo-tarpaulin
-        uses: actions-rs/cargo@v1
+        uses: clechasseur/rs-cargo@v1
         with:
           command: tarpaulin
           args: --engine llvm --tests --out Xml
