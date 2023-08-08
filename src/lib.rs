@@ -24,6 +24,7 @@
 //! use wiremock_logical_matchers::{and, not, or, xor};
 //!
 //! #[async_std::test]
+//! #[rustfmt::skip]
 //! async fn test_getting_started() {
 //!     let mock_server = MockServer::start().await;
 //!
@@ -110,6 +111,7 @@ where
 /// use wiremock_logical_matchers::and;
 ///
 /// #[async_std::test]
+/// #[rustfmt::skip]
 /// async fn test_and() {
 ///     let mock_server = MockServer::start().await;
 ///
@@ -139,6 +141,7 @@ where
 /// use wiremock_logical_matchers::{and, or};
 ///
 /// #[async_std::test]
+/// #[rustfmt::skip]
 /// async fn test_complex_expression() {
 ///     let mock_server = MockServer::start().await;
 ///
@@ -212,6 +215,7 @@ where
 /// use wiremock_logical_matchers::or;
 ///
 /// #[async_std::test]
+/// #[rustfmt::skip]
 /// async fn test_or() {
 ///     let mock_server = MockServer::start().await;
 ///
@@ -279,6 +283,7 @@ where
 /// use wiremock_logical_matchers::xor;
 ///
 /// #[async_std::test]
+/// #[rustfmt::skip]
 /// async fn test_xor() {
 ///     let mock_server = MockServer::start().await;
 ///
@@ -345,6 +350,7 @@ where
 /// use wiremock_logical_matchers::not;
 ///
 /// #[async_std::test]
+/// #[rustfmt::skip]
 /// async fn test_not() {
 ///     let mock_server = MockServer::start().await;
 ///
