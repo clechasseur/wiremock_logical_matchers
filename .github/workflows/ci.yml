@@ -48,7 +48,10 @@ jobs:
           cargo fmt --version
 
       - name: Run Rustfmt
-        uses: actions-rust-lang/rustfmt@v1
+        uses: LoliGothick/rustfmt-check@v0.4.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          flags: --all
 
   build:
     name: Release build for Rust ${{ matrix.toolchain }}${{ matrix.experimental && ' (experimental)' || '' }} on ${{ matrix.os }}${{ matrix.ignore-lock && ' without Cargo.lock' || '' }}
