@@ -48,9 +48,7 @@ jobs:
           cargo fmt --version
 
       - name: Run Rustfmt
-        uses: Syndelis/rustfmt-action@v1.2.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions-rust-lang/rustfmt@v1
 
   build:
     name: Release build for Rust ${{ matrix.toolchain }}${{ matrix.experimental && ' (experimental)' || '' }} on ${{ matrix.os }}${{ matrix.ignore-lock && ' without Cargo.lock' || '' }}
