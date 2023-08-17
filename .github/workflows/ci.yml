@@ -6,9 +6,6 @@ jobs:
   clippy:
     name: Clippy validation
     runs-on: ubuntu-latest
-    permissions:
-      checks: write
-      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -43,15 +40,14 @@ jobs:
 
       - name: Output Rust toolchain info
         run: |
-          cargo --version --verbose
-          rustc --version
-          cargo fmt --version
+          cargo +nightly --version --verbose
+          rustc +nightly --version
+          cargo +nightly fmt --version
 
       - name: Run Rustfmt
-        uses: LoliGothick/rustfmt-check@v0.4.1
+        uses: clechasseur/rs-fmt-check@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          flags: --all
+          args: --all
 
   build:
     name: Release build for Rust ${{ matrix.toolchain }}${{ matrix.experimental && ' (experimental)' || '' }} on ${{ matrix.os }}${{ matrix.ignore-lock && ' without Cargo.lock' || '' }}
