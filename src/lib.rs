@@ -7,7 +7,7 @@
 //! ```toml
 //! [dev-dependencies]
 //! wiremock = "0.5.19"
-//! wiremock_logical_matchers = "0.1.1"
+//! wiremock_logical_matchers = "0.1.2"
 //! ```
 //!
 //! or by running:
@@ -66,7 +66,7 @@ use wiremock::{Match, Request};
 pub fn and<L, R>(left_matcher: L, right_matcher: R) -> AndMatcher<L, R>
 where
     L: Match,
-    R: Match
+    R: Match,
 {
     AndMatcher::new(left_matcher, right_matcher)
 }
@@ -75,7 +75,7 @@ where
 pub fn or<L, R>(left_matcher: L, right_matcher: R) -> OrMatcher<L, R>
 where
     L: Match,
-    R: Match
+    R: Match,
 {
     OrMatcher::new(left_matcher, right_matcher)
 }
@@ -84,7 +84,7 @@ where
 pub fn xor<L, R>(left_matcher: L, right_matcher: R) -> XorMatcher<L, R>
 where
     L: Match,
-    R: Match
+    R: Match,
 {
     XorMatcher::new(left_matcher, right_matcher)
 }
@@ -92,7 +92,7 @@ where
 /// Shorthand for [NotMatcher].
 pub fn not<M>(matcher: M) -> NotMatcher<M>
 where
-    M: Match
+    M: Match,
 {
     NotMatcher::new(matcher)
 }
@@ -171,7 +171,7 @@ where
 impl<L, R> AndMatcher<L, R>
 where
     L: Match,
-    R: Match
+    R: Match,
 {
     /// Creates a new `AND` matcher with the two given submatchers.
     ///
@@ -192,7 +192,7 @@ where
 impl<L, R> Match for AndMatcher<L, R>
 where
     L: Match,
-    R: Match
+    R: Match,
 {
     fn matches(&self, request: &Request) -> bool {
         self.0.matches(request) && self.1.matches(request)
@@ -241,7 +241,7 @@ where
 impl<L, R> OrMatcher<L, R>
 where
     L: Match,
-    R: Match
+    R: Match,
 {
     /// Creates a new `OR` matcher with the two given submatchers.
     ///
@@ -262,7 +262,7 @@ where
 impl<L, R> Match for OrMatcher<L, R>
 where
     L: Match,
-    R: Match
+    R: Match,
 {
     fn matches(&self, request: &Request) -> bool {
         self.0.matches(request) || self.1.matches(request)
@@ -308,7 +308,7 @@ where
 impl<L, R> XorMatcher<L, R>
 where
     L: Match,
-    R: Match
+    R: Match,
 {
     /// Creates a new `XOR` (exclusive `OR`) matcher with the two given submatchers.
     ///
@@ -328,7 +328,7 @@ where
 impl<L, R> Match for XorMatcher<L, R>
 where
     L: Match,
-    R: Match
+    R: Match,
 {
     fn matches(&self, request: &Request) -> bool {
         self.0.matches(request) != self.1.matches(request)
@@ -371,7 +371,7 @@ where
 
 impl<M> NotMatcher<M>
 where
-    M: Match
+    M: Match,
 {
     /// Creates a new `NOT` matcher with the given submatcher.
     ///
@@ -389,7 +389,7 @@ where
 
 impl<M> Match for NotMatcher<M>
 where
-    M: Match
+    M: Match,
 {
     fn matches(&self, request: &Request) -> bool {
         !self.0.matches(request)

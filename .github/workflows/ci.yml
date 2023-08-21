@@ -6,28 +6,48 @@ jobs:
   clippy:
     name: Clippy validation
     runs-on: ubuntu-latest
-    permissions:
-      checks: write
-      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Rust with clippy
-        uses: dtolnay/rust-toolchain@stable
+      - name: Install Rust nightly with clippy
+        uses: dtolnay/rust-toolchain@nightly
         with:
           components: clippy
 
       - name: Output Rust toolchain info
         run: |
-          cargo --version --verbose
-          rustc --version
-          cargo clippy --version
+          cargo +nightly --version --verbose
+          rustc +nightly --version
+          cargo +nightly clippy --version
 
       - name: Run clippy
         uses: clechasseur/rs-clippy-check@v2
         with:
           args: --all-targets --all-features -- -D warnings
+
+  format:
+    name: Rustfmt check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Rust nightly with rustfmt
+        uses: dtolnay/rust-toolchain@nightly
+        with:
+          components: rustfmt
+
+      - name: Output Rust toolchain info
+        run: |
+          cargo +nightly --version --verbose
+          rustc +nightly --version
+          cargo +nightly fmt --version
+
+      - name: Run Rustfmt
+        uses: clechasseur/rs-fmt-check@v1
+        with:
+          args: --all
 
   build:
     name: Release build for Rust ${{ matrix.toolchain }}${{ matrix.experimental && ' (experimental)' || '' }} on ${{ matrix.os }}${{ matrix.ignore-lock && ' without Cargo.lock' || '' }}

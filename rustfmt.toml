@@ -1,0 +1,6 @@
+chain_width = 60
+group_imports = "StdExternalCrate"
+format_macro_matchers = true
+unstable_features = true
+use_field_init_shorthand = true
+use_small_heuristics = "Max"
