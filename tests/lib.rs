@@ -1,6 +1,6 @@
 use reqwest::{Client, StatusCode};
-use wiremock::{Mock, MockServer, ResponseTemplate};
 use wiremock::matchers::{header, header_exists, query_param};
+use wiremock::{Mock, MockServer, ResponseTemplate};
 use wiremock_logical_matchers::{and, not, or, xor};
 
 #[async_std::test]
@@ -176,12 +176,11 @@ async fn test_not() {
 async fn test_complex_expression() {
     let mock_server = MockServer::start().await;
 
-    Mock::given(
-        or(
-            and(header_exists("x-for-testing-purposes"), query_param("page", "1")),
-            header("x-bypass", "true")
-        )
-    ).respond_with(ResponseTemplate::new(200))
+    Mock::given(or(
+        and(header_exists("x-for-testing-purposes"), query_param("page", "1")),
+        header("x-bypass", "true"),
+    ))
+    .respond_with(ResponseTemplate::new(200))
     .mount(&mock_server)
     .await;
 
