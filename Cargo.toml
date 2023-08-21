@@ -1,6 +1,6 @@
 [package]
 name = "wiremock_logical_matchers"
-version = "0.1.1"
+version = "0.1.2"
 authors = [ "Charles Lechasseur <shiftingbeard@gmx.com>" ]
 edition = "2018"
 

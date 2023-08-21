@@ -7,7 +7,7 @@
 //! ```toml
 //! [dev-dependencies]
 //! wiremock = "0.5.19"
-//! wiremock_logical_matchers = "0.1.1"
+//! wiremock_logical_matchers = "0.1.2"
 //! ```
 //!
 //! or by running:
