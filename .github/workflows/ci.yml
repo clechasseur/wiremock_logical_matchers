@@ -10,16 +10,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Rust nightly with clippy
-        uses: dtolnay/rust-toolchain@nightly
+      - name: Install Rust with clippy
+        uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy
 
       - name: Output Rust toolchain info
         run: |
-          cargo +nightly --version --verbose
-          rustc +nightly --version
-          cargo +nightly clippy --version
+          cargo --version --verbose
+          rustc --version
+          cargo clippy --version
 
       - name: Run clippy
         uses: clechasseur/rs-clippy-check@v2
