@@ -14,7 +14,7 @@ jobs:
       issues: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Run security audit
         uses: rustsec/audit-check@v1

@@ -10,4 +10,4 @@ jobs:
   waitaminute:
     runs-on: ubuntu-latest
     steps:
-      - uses: petalmd/waitaminute@v1
+      - uses: petalmd/waitaminute@v2

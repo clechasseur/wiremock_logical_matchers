@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Rust with clippy
         uses: dtolnay/rust-toolchain@stable
@@ -22,7 +22,7 @@ jobs:
           cargo clippy --version
 
       - name: Run clippy
-        uses: clechasseur/rs-clippy-check@v2
+        uses: clechasseur/rs-clippy-check@v3
         with:
           args: --all-targets --all-features -- -D warnings
 
@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Rust nightly with rustfmt
         uses: dtolnay/rust-toolchain@nightly
@@ -45,7 +45,7 @@ jobs:
           cargo +nightly fmt --version
 
       - name: Run Rustfmt
-        uses: clechasseur/rs-fmt-check@v1
+        uses: clechasseur/rs-fmt-check@v2
         with:
           args: --all
 
@@ -70,7 +70,7 @@ jobs:
     continue-on-error: ${{ matrix.experimental }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Remove Cargo.lock
         if: ${{ matrix.ignore-lock }}
@@ -87,7 +87,7 @@ jobs:
           rustc --version
 
       - name: Run release build
-        uses: clechasseur/rs-cargo@v1
+        uses: clechasseur/rs-cargo@v2
         with:
           command: build
           args: --all-features --release
@@ -110,7 +110,7 @@ jobs:
     continue-on-error: ${{ matrix.experimental }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Remove Cargo.lock
         if: ${{ matrix.ignore-lock }}
@@ -127,13 +127,13 @@ jobs:
           rustc --version
 
       - name: Run checks
-        uses: clechasseur/rs-cargo@v1
+        uses: clechasseur/rs-cargo@v2
         with:
           command: check
           args: --all-targets --all-features
 
       - name: Run tests
-        uses: clechasseur/rs-cargo@v1
+        uses: clechasseur/rs-cargo@v2
         with:
           command: test
           args: --all-features
@@ -143,7 +143,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
@@ -152,13 +152,13 @@ jobs:
         run: curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
 
       - name: Install cargo-tarpaulin
-        uses: clechasseur/rs-cargo@v1
+        uses: clechasseur/rs-cargo@v2
         with:
           command: binstall
           args: --no-confirm --no-symlinks cargo-tarpaulin
 
       - name: Run cargo-tarpaulin
-        uses: clechasseur/rs-cargo@v1
+        uses: clechasseur/rs-cargo@v2
         with:
           command: tarpaulin
           args: --engine llvm --tests --out Xml
