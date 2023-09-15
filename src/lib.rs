@@ -59,6 +59,12 @@
 //!
 //! [wiremock on crates.io](https://crates.io/crates/wiremock)
 
+#![deny(missing_docs)]
+#![deny(rustdoc::missing_crate_level_docs)]
+#![deny(rustdoc::broken_intra_doc_links)]
+#![deny(rustdoc::private_intra_doc_links)]
+#![cfg_attr(any(nightly_rustc, docsrs), feature(doc_cfg))]
+
 use derivative::Derivative;
 use wiremock::{Match, Request};
 
