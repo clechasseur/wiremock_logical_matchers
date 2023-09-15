@@ -2,6 +2,9 @@ name: CI
 
 on: [ push ]
 
+env:
+  CI: 1
+
 jobs:
   clippy:
     name: Clippy validation
@@ -24,7 +27,7 @@ jobs:
       - name: Run clippy
         uses: clechasseur/rs-clippy-check@v3
         with:
-          args: --all-targets --all-features -- -D warnings
+          args: --workspace --all-features -- -D warnings
 
   format:
     name: Rustfmt check
@@ -90,7 +93,7 @@ jobs:
         uses: clechasseur/rs-cargo@v2
         with:
           command: build
-          args: --all-features --release
+          args: --workspace --all-features --release
 
   tests:
     name: Tests for Rust ${{ matrix.toolchain }}${{ matrix.experimental && ' (experimental)' || '' }} on ${{ matrix.os }}${{ matrix.ignore-lock && ' without Cargo.lock' || '' }}
@@ -130,13 +133,13 @@ jobs:
         uses: clechasseur/rs-cargo@v2
         with:
           command: check
-          args: --all-targets --all-features
+          args: --workspace --all-targets --all-features
 
       - name: Run tests
         uses: clechasseur/rs-cargo@v2
         with:
           command: test
-          args: --all-features
+          args: --workspace --all-features
 
   tarpaulin:
     name: Code coverage
@@ -148,20 +151,15 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Install cargo-binstall
-        run: curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
-
       - name: Install cargo-tarpaulin
-        uses: clechasseur/rs-cargo@v2
+        uses: taiki-e/install-action@v2
         with:
-          command: binstall
-          args: --no-confirm --no-symlinks cargo-tarpaulin
+          tool: cargo-tarpaulin
 
       - name: Run cargo-tarpaulin
         uses: clechasseur/rs-cargo@v2
         with:
           command: tarpaulin
-          args: --engine llvm --tests --out Xml
 
       - name: Upload code coverage results to codecov.io
         uses: codecov/codecov-action@v3
@@ -173,4 +171,22 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: code-coverage-report
-          path: cobertura.xml
+          path: |
+            cobertura.xml
+            tarpaulin-report.html
+
+  doc:
+    name: Rustdoc check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Rust nightly
+        uses: dtolnay/rust-toolchain@nightly
+
+      - name: Run rustdoc
+        uses: clechasseur/rs-cargo@v2
+        with:
+          command: doc
+          args: --workspace --all-features
