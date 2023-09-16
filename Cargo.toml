@@ -16,7 +16,7 @@ description = "Logical matchers for use with wiremock."
 keywords = [ "test", "http", "mocking", "mock", "wiremock" ]
 categories = [ "development-tools", "asynchronous" ]
 
-include = [ "src/**/*", "tests/**/*", "LICENSE", "README.md" ]
+include = [ "src/**/*", "tests/**/*", "build.rs", "LICENSE", "README.md" ]
 
 [package.metadata.docs.rs]
 all-features = true
