@@ -6,7 +6,7 @@ use rustc_version::Channel::Nightly;
 fn main() {
     println!("cargo:rerun-if-env-changed=CI");
 
-    if version_meta().unwrap().channel == Nightly {
+    if version_meta().unwrap().channel <= Nightly {
         println!("cargo:rustc-cfg=nightly_rustc");
     }
 
