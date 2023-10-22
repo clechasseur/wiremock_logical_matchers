@@ -38,7 +38,7 @@ post-msrv:
 
 msrv:
     {{ if path_exists("Cargo.lock.msrv") == "true" { `just pre-msrv` } else { ` ` } }}
-    cargo msrv -- just check
+    cargo msrv -- cargo check --workspace --lib --bins --all-features
     {{ if path_exists("Cargo.lock.bak") == "true" { `just post-msrv` } else { ` ` } }}
 
 doc:
