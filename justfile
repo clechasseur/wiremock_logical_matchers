@@ -1,28 +1,36 @@
 set windows-shell := ["powershell.exe", "-NoLogo", "-Command"]
 
-default_toolchain := ''
+toolchain := ''
+trimmed_toolchain := trim(toolchain)
 
-default: test
+cargo := if trimmed_toolchain != "" {
+    "cargo +" + trimmed_toolchain
+} else {
+    "cargo"
+}
+
+default:
+    @just --list
 
 tidy: clippy fmt
 
 clippy:
-    cargo clippy --workspace --all-targets --all-features -- -D warnings
+    {{cargo}} clippy --workspace --all-targets --all-features -- -D warnings
 
 fmt:
     cargo +nightly fmt --all
 
-check toolchain=default_toolchain:
-    cargo {{toolchain}} check --workspace --all-targets --all-features
+check:
+    {{cargo}} check --workspace --all-targets --all-features
 
-build toolchain=default_toolchain:
-    cargo {{toolchain}} build --workspace --all-targets --all-features
+build *extra_args:
+    {{cargo}} build --workspace --all-targets --all-features {{extra_args}}
 
-test toolchain=default_toolchain:
-    cargo {{toolchain}} test --workspace --all-features
+test *extra_args:
+    {{cargo}} test --workspace --all-features {{extra_args}}
 
-tarpaulin toolchain=default_toolchain:
-    cargo {{toolchain}} tarpaulin --target-dir target-tarpaulin
+tarpaulin:
+    {{cargo}} tarpaulin --target-dir target-tarpaulin
 
 pre-msrv:
     mv Cargo.toml Cargo.toml.bak
@@ -43,3 +51,6 @@ msrv:
 
 doc:
     cargo +nightly doc --workspace --all-features --open
+
+test-package:
+    {{cargo}} publish --dry-run
