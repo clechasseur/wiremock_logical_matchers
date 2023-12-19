@@ -29,7 +29,7 @@ wiremock = "0"
 
 [dev-dependencies]
 async-std = { version = "1", features = ["attributes", "tokio1"] }
-reqwest = "0.11.22"
+reqwest = "0.11.23"
 
 [build-dependencies]
 rustc_version = "0.4.0"
