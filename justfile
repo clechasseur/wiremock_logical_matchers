@@ -9,8 +9,6 @@ cargo := if trimmed_toolchain != "" {
     "cargo"
 }
 
-open := '--open'
-
 default:
     @just --list
 
@@ -31,8 +29,9 @@ build *extra_args:
 test *extra_args:
     {{cargo}} test --workspace --all-features {{extra_args}}
 
-tarpaulin:
-    {{cargo}} tarpaulin --target-dir target-tarpaulin
+tarpaulin *extra_args:
+    {{cargo}} tarpaulin --target-dir target-tarpaulin {{extra_args}}
+    {{ if env('CI', '') == '' { `open tarpaulin-report.html` } else { ` ` } }}
 
 pre-msrv:
     mv Cargo.toml Cargo.toml.bak
@@ -52,7 +51,7 @@ msrv:
     {{ if path_exists("Cargo.lock.bak") == "true" { `just post-msrv` } else { ` ` } }}
 
 doc $RUSTDOCFLAGS="-D warnings":
-    {{cargo}} doc --workspace --all-features {{open}}
+    {{cargo}} doc {{ if env('CI', '') != '' { '--no-deps' } else { '--open' } }} --workspace --all-features
 
 doc-coverage $RUSTDOCFLAGS="-Z unstable-options --show-coverage":
     cargo +nightly doc --no-deps --workspace --all-features

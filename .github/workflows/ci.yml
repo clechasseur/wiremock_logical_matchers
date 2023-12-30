@@ -151,7 +151,7 @@ jobs:
         with:
           command: check
           args: --workspace --all-targets ${{ matrix.all-features && '--all-features' || '' }}
-  
+
       - name: Run tests
         uses: clechasseur/rs-cargo@v2
         with:
@@ -228,7 +228,7 @@ jobs:
         uses: extractions/setup-just@v1
 
       - name: Generate doc using rustdoc
-        run: just open='' doc
+        run: just doc
 
   doc-coverage:
     name: Rustdoc coverage check
