@@ -6,8 +6,8 @@
 //!
 //! ```toml
 //! [dev-dependencies]
-//! wiremock = "0"
-//! wiremock_logical_matchers = "0"
+//! wiremock = "0.5"
+//! wiremock_logical_matchers = "0.5"
 //! ```
 //!
 //! or by running:
@@ -23,7 +23,7 @@
 //! use wiremock::matchers::{header, header_exists, path, query_param};
 //! use wiremock_logical_matchers::{and, not, or, xor};
 //!
-//! #[async_std::test]
+//! #[tokio::test]
 //! async fn test_getting_started() {
 //!     let mock_server = MockServer::start().await;
 //!
@@ -45,7 +45,7 @@
 //!             )
 //!         ).and(
 //!             not(
-//!                 header_exists("x-voldemort")
+//!                 header_exists("x-necronomicon")
 //!             )
 //!         ).respond_with(ResponseTemplate::new(200))
 //!         .mount(&mock_server)
@@ -115,7 +115,7 @@ where
 /// use wiremock::matchers::{header_exists, query_param};
 /// use wiremock_logical_matchers::and;
 ///
-/// #[async_std::test]
+/// #[tokio::test]
 /// async fn test_and() {
 ///     let mock_server = MockServer::start().await;
 ///
@@ -144,7 +144,7 @@ where
 /// use wiremock::matchers::{header, header_exists, query_param};
 /// use wiremock_logical_matchers::{and, or};
 ///
-/// #[async_std::test]
+/// #[tokio::test]
 /// async fn test_complex_expression() {
 ///     let mock_server = MockServer::start().await;
 ///
@@ -217,7 +217,7 @@ where
 /// use wiremock::matchers::{header, query_param};
 /// use wiremock_logical_matchers::or;
 ///
-/// #[async_std::test]
+/// #[tokio::test]
 /// async fn test_or() {
 ///     let mock_server = MockServer::start().await;
 ///
@@ -284,7 +284,7 @@ where
 /// use wiremock::matchers::header;
 /// use wiremock_logical_matchers::xor;
 ///
-/// #[async_std::test]
+/// #[tokio::test]
 /// async fn test_xor() {
 ///     let mock_server = MockServer::start().await;
 ///
@@ -350,13 +350,13 @@ where
 /// use wiremock::matchers::header_exists;
 /// use wiremock_logical_matchers::not;
 ///
-/// #[async_std::test]
+/// #[tokio::test]
 /// async fn test_not() {
 ///     let mock_server = MockServer::start().await;
 ///
 ///     Mock::given(
 ///             not(
-///                 header_exists("x-voldemort")
+///                 header_exists("x-necronomicon")
 ///             )
 ///         ).respond_with(ResponseTemplate::new(200))
 ///         .mount(&mock_server)

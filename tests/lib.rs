@@ -3,7 +3,7 @@ use wiremock::matchers::{header, header_exists, query_param};
 use wiremock::{Mock, MockServer, ResponseTemplate};
 use wiremock_logical_matchers::{and, not, or, xor};
 
-#[async_std::test]
+#[tokio::test]
 async fn test_and() {
     let mock_server = MockServer::start().await;
 
@@ -50,7 +50,7 @@ async fn test_and() {
     assert_eq!(status_also_also_not_found, StatusCode::NOT_FOUND);
 }
 
-#[async_std::test]
+#[tokio::test]
 async fn test_or() {
     let mock_server = MockServer::start().await;
 
@@ -97,7 +97,7 @@ async fn test_or() {
     assert_eq!(status_not_found, StatusCode::NOT_FOUND);
 }
 
-#[async_std::test]
+#[tokio::test]
 async fn test_xor() {
     let mock_server = MockServer::start().await;
 
@@ -144,7 +144,7 @@ async fn test_xor() {
     assert_eq!(status_also_not_found, StatusCode::NOT_FOUND);
 }
 
-#[async_std::test]
+#[tokio::test]
 async fn test_not() {
     let mock_server = MockServer::start().await;
 
@@ -172,7 +172,7 @@ async fn test_not() {
     assert_eq!(status_not_found, StatusCode::NOT_FOUND);
 }
 
-#[async_std::test]
+#[tokio::test]
 async fn test_complex_expression() {
     let mock_server = MockServer::start().await;
 
