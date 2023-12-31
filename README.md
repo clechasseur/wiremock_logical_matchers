@@ -10,8 +10,8 @@ Add `wiremock_logical_matchers` to your development dependencies:
 
 ```toml
 [dev-dependencies]
-wiremock = "0"
-wiremock_logical_matchers = "0"
+wiremock = "0.5"
+wiremock_logical_matchers = "0.5"
 ```
 
 or by running:
@@ -27,7 +27,7 @@ use wiremock::{Mock, MockServer, ResponseTemplate};
 use wiremock::matchers::{header, header_exists, path, query_param};
 use wiremock_logical_matchers::{and, not, or, xor};
 
-#[async_std::test]
+#[tokio::test]
 async fn test_getting_started() {
     let mock_server = MockServer::start().await;
 
@@ -49,7 +49,7 @@ async fn test_getting_started() {
             )
         ).and(
             not(
-                header_exists("x-voldemort")
+                header_exists("x-necronomicon")
             )
         ).respond_with(ResponseTemplate::new(200))
         .mount(&mock_server)
