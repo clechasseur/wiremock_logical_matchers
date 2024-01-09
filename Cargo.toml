@@ -26,11 +26,17 @@ rustc-args = [ "--cfg", "docsrs" ]
 
 [dependencies]
 derivative = "2.2.0"
-wiremock = "0.5"
+wiremock = "0.5.22"
+
+# The following dependencies are not directly needed, but are pinned so that the crate can build
+# with minimal versions. If we don't specify those, the minimal versions specified by `wiremock`
+# do not produce a working build on modern Rust toolchains.
+log = "0.4.20"
+tokio = "1.35.1"
 
 [dev-dependencies]
 reqwest = "0.11.23"
-tokio = { version = "1", features = ["full"] }
+tokio = { version = "1.35.1", features = ["full"] }
 
 [build-dependencies]
 rustc_version = "0.4.0"
