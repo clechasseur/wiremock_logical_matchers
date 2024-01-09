@@ -33,22 +33,23 @@ tarpaulin *extra_args:
     {{cargo}} tarpaulin --target-dir target-tarpaulin {{extra_args}}
     {{ if env('CI', '') == '' { `open tarpaulin-report.html` } else { ` ` } }}
 
-pre-msrv:
-    mv Cargo.toml Cargo.toml.bak
-    mv Cargo.lock Cargo.lock.bak
-    mv Cargo.toml.msrv Cargo.toml
-    mv Cargo.lock.msrv Cargo.lock
+_pre-min-versions:
+    {{ if path_exists("Cargo.toml.bak.msrv") == "true" { `cp Cargo.toml.bak.msrv Cargo.toml` } else { ` ` } }}
 
-post-msrv:
-    mv Cargo.toml Cargo.toml.msrv
-    mv Cargo.lock Cargo.lock.msrv
-    mv Cargo.toml.bak Cargo.toml
-    mv Cargo.lock.bak Cargo.lock
+check-min-versions: _pre-min-versions
+    {{cargo}} minimal-versions check --workspace --lib --bins --all-features
 
-msrv:
-    {{ if path_exists("Cargo.lock.msrv") == "true" { `just pre-msrv` } else { ` ` } }}
-    cargo msrv -- cargo check --workspace --lib --bins --all-features
-    {{ if path_exists("Cargo.lock.bak") == "true" { `just post-msrv` } else { ` ` } }}
+_pre-msrv:
+    cp Cargo.toml Cargo.toml.bak.msrv
+    -toml unset --toml-path Cargo.toml package.rust-version
+    {{ if path_exists("Cargo.lock") == "true" { `cp Cargo.lock Cargo.lock.bak.msrv` } else { ` ` } }}
+
+_post-msrv:
+    mv Cargo.toml.bak.msrv Cargo.toml
+    {{ if path_exists("Cargo.lock.bak.msrv") == "true" { `mv Cargo.lock.bak.msrv Cargo.lock` } else { `rm Cargo.lock` } }}
+
+msrv: _pre-msrv && _post-msrv
+    cargo msrv -- just check-min-versions
 
 doc $RUSTDOCFLAGS="-D warnings":
     {{cargo}} doc {{ if env('CI', '') != '' { '--no-deps' } else { '--open' } }} --workspace --all-features
