@@ -56,8 +56,8 @@ jobs:
         with:
           args: --all
 
-  build-msrv:
-    name: MSRV build for Rust ${{ matrix.toolchain }} on ${{ matrix.os }}${{ matrix.all-features && ' with all features' || '' }}
+  msrv-check:
+    name: MSRV check for Rust ${{ matrix.toolchain }} on ${{ matrix.os }}${{ matrix.all-features && ' with all features' || '' }}
     strategy:
       fail-fast: false
       matrix:
@@ -69,6 +69,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install Rust nightly toolchain
+        if: ${{ matrix.toolchain != 'nightly' }}
+        uses: dtolnay/rust-toolchain@nightly
+
       - name: Install Rust toolchain ${{ matrix.toolchain }}
         uses: dtolnay/rust-toolchain@master
         with:
@@ -76,6 +80,19 @@ jobs:
 
       - name: Install just
         uses: extractions/setup-just@v1
+
+      - name: Setup Python 3
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install toml-cli
+        run: pip3 install toml-cli
+
+      - name: Install cargo-minimal-versions
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-hack,cargo-minimal-versions
 
       - name: Output Rust toolchain info
         run: |
@@ -85,33 +102,23 @@ jobs:
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
         with:
-          prefix-key: v1-rust
-          key: all-features-${{ matrix.all-features }}-msrv-cargo-files-${{ hashFiles('**/Cargo.*.msrv') }}
-
-      - name: Check if we need to install MSRV cargo files
-        id: check_msrv_cargo_files
-        uses: andstor/file-existence-action@v2
-        with:
-          files: "Cargo.lock.msrv, Cargo.toml.msrv"
-
-      - name: Install MSRV cargo files
-        if: ${{ steps.check_msrv_cargo_files.outputs.files_exists == 'true' }}
-        run: just pre-msrv
+          prefix-key: v2-rust
+          key: all-features-${{ matrix.all-features }}
 
       - name: Run checks
         uses: clechasseur/rs-cargo@v2
         with:
-          command: check
-          args: --workspace --lib --bins ${{ matrix.all-features && '--all-features' || '' }}
+          toolchain: ${{ matrix.toolchain }}
+          command: minimal-versions
+          args: check --workspace --lib --bins ${{ matrix.all-features && '--all-features' || '' }}
 
   build:
-    name: Build for Rust ${{ matrix.toolchain }}${{ matrix.experimental && ' (experimental)' || '' }} on ${{ matrix.os }}${{ matrix.ignore-lock && ' without Cargo.lock' || '' }}${{ matrix.all-features && ' with all features' || '' }}
+    name: Build for Rust ${{ matrix.toolchain }}${{ matrix.experimental && ' (experimental)' || '' }} on ${{ matrix.os }}${{ matrix.all-features && ' with all features' || '' }}
     strategy:
       fail-fast: false
       matrix:
         toolchain: [ 1.68.2, stable, beta, nightly ]
         os: [ ubuntu, macos, windows ]
-        ignore-lock: [ false, true ]
         all-features: [ false ]
         include:
           - experimental: false
@@ -124,10 +131,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Remove Cargo.lock
-        if: ${{ matrix.ignore-lock }}
-        run: rm Cargo.lock
 
       - name: Install Rust toolchain ${{ matrix.toolchain }}
         uses: dtolnay/rust-toolchain@master
@@ -143,8 +146,8 @@ jobs:
         if: ${{ !matrix.experimental }}
         uses: Swatinem/rust-cache@v2
         with:
-          prefix-key: v1-rust
-          key: ignore-lock-${{ matrix.ignore-lock }}-all-features-${{ matrix.all-features }}
+          prefix-key: v2-rust
+          key: all-features-${{ matrix.all-features }}
 
       - name: Run checks
         uses: clechasseur/rs-cargo@v2
