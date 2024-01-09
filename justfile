@@ -33,23 +33,33 @@ tarpaulin *extra_args:
     {{cargo}} tarpaulin --target-dir target-tarpaulin {{extra_args}}
     {{ if env('CI', '') == '' { `open tarpaulin-report.html` } else { ` ` } }}
 
-_pre-min-versions:
+reset-manifest-before-msrv:
     {{ if path_exists("Cargo.toml.bak.msrv") == "true" { `cp Cargo.toml.bak.msrv Cargo.toml` } else { ` ` } }}
 
-check-min-versions: _pre-min-versions
+check-min-versions: reset-manifest-before-msrv
     {{cargo}} minimal-versions check --workspace --lib --bins --all-features
 
-_pre-msrv:
+backup-manifest-before-msrv:
     cp Cargo.toml Cargo.toml.bak.msrv
-    -toml unset --toml-path Cargo.toml package.rust-version
+
+backup-lockfile-before-msrv:
     {{ if path_exists("Cargo.lock") == "true" { `cp Cargo.lock Cargo.lock.bak.msrv` } else { ` ` } }}
 
-_post-msrv:
+unset-rust-version:
+    -toml unset --toml-path Cargo.toml package.rust-version
+
+restore-msrv-manifest:
     mv Cargo.toml.bak.msrv Cargo.toml
+
+restore-msrv-lockfile:
     {{ if path_exists("Cargo.lock.bak.msrv") == "true" { `mv Cargo.lock.bak.msrv Cargo.lock` } else { `rm Cargo.lock` } }}
 
-msrv: _pre-msrv && _post-msrv
+msrv: backup-manifest-before-msrv backup-lockfile-before-msrv unset-rust-version && restore-msrv-manifest restore-msrv-lockfile
     cargo msrv -- just check-min-versions
+
+update-to-min-versions: backup-manifest-before-msrv backup-lockfile-before-msrv && restore-msrv-manifest
+    cargo hack --remove-dev-deps --workspace
+    cargo +nightly update -Z minimal-versions
 
 doc $RUSTDOCFLAGS="-D warnings":
     {{cargo}} doc {{ if env('CI', '') != '' { '--no-deps' } else { '--open' } }} --workspace --all-features
