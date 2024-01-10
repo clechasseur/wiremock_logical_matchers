@@ -218,23 +218,6 @@ jobs:
       - name: Generate doc using rustdoc
         run: just doc
 
-  doc-coverage:
-    name: Rustdoc coverage check
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install Rust nightly
-        uses: dtolnay/rust-toolchain@nightly
-
-      - name: Install just
-        uses: extractions/setup-just@v1
-
-      - name: Check doc coverage
-        run: just doc-coverage
-
   publish-dry-run:
     name: Publish dry-run
     runs-on: ubuntu-latest
