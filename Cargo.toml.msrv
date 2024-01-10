@@ -9,9 +9,8 @@ derivative = "2.2.0"
 wiremock = "0.5.22"
 
 # Added to fix the MSRV build:
-# getrandom = "0.1.16" # This one is deep, it's wiremock => http_types => rand => getrandom
 log = "0.4.20"
-# regex = "1.10.2"
+thread_local = "0.3.6"
 tokio = "1.35.1"
 
 [build-dependencies]

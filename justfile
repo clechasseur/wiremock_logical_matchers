@@ -48,17 +48,28 @@ doc $RUSTDOCFLAGS="-D warnings":
 doc-coverage $RUSTDOCFLAGS="-Z unstable-options --show-coverage":
     cargo +nightly doc --no-deps --workspace {{all_features_flag}}
 
+backup-manifest:
+    {{ if path_exists("Cargo.toml") == "true" { `mv Cargo.toml Cargo.toml.bak` } else { ` ` } }}
+    {{ if path_exists("Cargo.lock") == "true" { `mv Cargo.lock Cargo.lock.bak` } else { ` ` } }}
+
+restore-manifest:
+    {{ if path_exists("Cargo.toml.bak") == "true" { `mv Cargo.toml.bak Cargo.toml` } else { `rm Cargo.toml` } }}
+    {{ if path_exists("Cargo.lock.bak") == "true" { `mv Cargo.lock.bak Cargo.lock` } else { `rm Cargo.lock` } }}
+
+apply-msrv:
+    cp Cargo.toml.msrv Cargo.toml
+
+save-msrv:
+    cp Cargo.toml Cargo.toml.msrv
+
 minimize:
     cargo hack --remove-dev-deps --workspace
     cargo +nightly update -Z minimal-versions
 
-check-minimal:
-    {{ if path_exists("Cargo.toml") == "true" { `mv Cargo.toml Cargo.toml.bak` } else { ` ` } }}
-    {{ if path_exists("Cargo.lock") == "true" { `mv Cargo.lock Cargo.lock.bak` } else { ` ` } }}
-    cp Cargo.toml.msrv Cargo.toml
+check-minimal-only:
     {{cargo}} minimal-versions check --workspace --lib --bins {{all_features_flag}}
-    {{ if path_exists("Cargo.toml.bak") == "true" { `mv Cargo.toml.bak Cargo.toml` } else { `rm Cargo.toml` } }}
-    {{ if path_exists("Cargo.lock.bak") == "true" { `mv Cargo.lock.bak Cargo.lock` } else { `rm Cargo.lock` } }}
+
+check-minimal: backup-manifest apply-msrv check-minimal-only restore-manifest
 
 msrv:
     cargo msrv -- just check-minimal
