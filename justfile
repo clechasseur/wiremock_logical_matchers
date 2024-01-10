@@ -35,6 +35,9 @@ build *extra_args:
 test *extra_args:
     {{cargo}} test --workspace {{all_features_flag}} {{extra_args}}
 
+update *extra_args:
+    {{cargo}} update {{extra_args}}
+
 tarpaulin *extra_args:
     {{cargo}} tarpaulin --target-dir target-tarpaulin {{extra_args}}
     {{ if env('CI', '') == '' { `open tarpaulin-report.html` } else { ` ` } }}
