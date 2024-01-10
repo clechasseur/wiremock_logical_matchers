@@ -49,12 +49,16 @@ doc-coverage $RUSTDOCFLAGS="-Z unstable-options --show-coverage":
     cargo +nightly doc --no-deps --workspace {{all_features_flag}}
 
 backup-manifest:
+    {{ if path_exists("Cargo.toml.bak") == "true" { error("Manifest backup already exists - aborting") } else { ` ` } }}
+    {{ if path_exists("Cargo.lock.bak") == "true" { error("Lockfile backup already exists - aborting") } else { ` ` } }}
     {{ if path_exists("Cargo.toml") == "true" { `mv Cargo.toml Cargo.toml.bak` } else { ` ` } }}
     {{ if path_exists("Cargo.lock") == "true" { `mv Cargo.lock Cargo.lock.bak` } else { ` ` } }}
 
 restore-manifest:
-    {{ if path_exists("Cargo.toml.bak") == "true" { `mv Cargo.toml.bak Cargo.toml` } else { `rm Cargo.toml` } }}
-    {{ if path_exists("Cargo.lock.bak") == "true" { `mv Cargo.lock.bak Cargo.lock` } else { `rm Cargo.lock` } }}
+    {{ if path_exists("Cargo.toml") == "true" { `rm Cargo.toml` } else { ` ` } }}
+    {{ if path_exists("Cargo.lock") == "true" { `rm Cargo.lock` } else { ` ` } }}
+    {{ if path_exists("Cargo.toml.bak") == "true" { `mv Cargo.toml.bak Cargo.toml` } else { ` ` } }}
+    {{ if path_exists("Cargo.lock.bak") == "true" { `mv Cargo.lock.bak Cargo.lock` } else { ` ` } }}
 
 apply-msrv:
     cp Cargo.toml.msrv Cargo.toml
