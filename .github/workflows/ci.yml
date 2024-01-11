@@ -237,4 +237,7 @@ jobs:
           cache-targets: false
 
       - name: Perform publish dry-run
-        run: just test-package
+        uses: clechasseur/rs-cargo@v2
+        with:
+          command: publish
+          args: --dry-run
