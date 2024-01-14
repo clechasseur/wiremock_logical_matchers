@@ -94,19 +94,20 @@ jobs:
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
         with:
-          prefix-key: v3-rust
-          key: all-features-${{ matrix.all-features }}
+          prefix-key: v4-rust
+          key: all-features-${{ matrix.all-features }}-msrv-cargo-files-${{ hashFiles('**/Cargo.*.msrv') }}
 
       - name: Run checks using cargo-minimal-versions
         run: just all_features=${{ matrix.all-features }} check-minimal
 
   build:
-    name: Build for Rust ${{ matrix.toolchain }}${{ matrix.experimental && ' (experimental)' || '' }} on ${{ matrix.os }}${{ matrix.all-features && ' with all features' || '' }}
+    name: Build for Rust ${{ matrix.toolchain }}${{ matrix.experimental && ' (experimental)' || '' }} on ${{ matrix.os }}${{ matrix.ignore-lock && ' without Cargo.lock' || '' }}${{ matrix.all-features && ' with all features' || '' }}
     strategy:
       fail-fast: false
       matrix:
         toolchain: [ 1.68.2, stable, beta, nightly ]
         os: [ ubuntu, macos, windows ]
+        ignore-lock: [ false, true ]
         all-features: [ false ]
         include:
           - experimental: false
@@ -119,6 +120,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Remove Cargo.lock
+        if: ${{ matrix.ignore-lock }}
+        run: rm Cargo.lock
 
       - name: Install Rust toolchain ${{ matrix.toolchain }}
         uses: dtolnay/rust-toolchain@master
@@ -137,8 +142,8 @@ jobs:
         if: ${{ !matrix.experimental }}
         uses: Swatinem/rust-cache@v2
         with:
-          prefix-key: v2-rust
-          key: all-features-${{ matrix.all-features }}
+          prefix-key: v1-rust
+          key: ignore-lock-${{ matrix.ignore-lock }}-all-features-${{ matrix.all-features }}
 
       - name: Run checks
         run: just all_features=${{ matrix.all-features }} check

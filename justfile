@@ -74,7 +74,7 @@ minimize:
     cargo +nightly update -Z minimal-versions
 
 check-minimal-only:
-    {{cargo}} minimal-versions check --workspace --lib --bins {{all_features_flag}}
+    {{cargo}} minimal-versions check --workspace --lib --bins {{all_features_flag}} {{message_format_flag}}
 
 check-minimal: backup-manifest apply-msrv check-minimal-only restore-manifest
 
