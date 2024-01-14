@@ -10,8 +10,8 @@ Add `wiremock_logical_matchers` to your development dependencies:
 
 ```toml
 [dev-dependencies]
-wiremock = "0.5"
-wiremock_logical_matchers = "0.5"
+wiremock = "0.5.22"
+wiremock_logical_matchers = "0.5.0"
 ```
 
 or by running:

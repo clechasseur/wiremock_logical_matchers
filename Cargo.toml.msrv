@@ -1,0 +1,17 @@
+[package]
+name = "wiremock_logical_matchers"
+version = "0.1.0"
+authors = [ "Charles Lechasseur <shiftingbeard@gmx.com>" ]
+edition = "2018"
+
+[dependencies]
+derivative = "2.2.0"
+wiremock = "0.5.22"
+
+# Added to fix the MSRV build:
+log = "0.4.20"
+regex = "1.10.2"
+tokio = "1.35.1"
+
+[build-dependencies]
+rustc_version = "0.4.0"
