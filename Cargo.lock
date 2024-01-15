@@ -1582,7 +1582,7 @@ dependencies = [
 
 [[package]]
 name = "wiremock_logical_matchers"
-version = "0.5.0"
+version = "0.5.1"
 dependencies = [
  "derivative",
  "reqwest",
