@@ -15,17 +15,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
 
       - name: Install Rust with clippy
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@b113a30d27a8e59c969077c0a0168cc13dab5ffc
         with:
           toolchain: stable
           components: clippy
           cache: false
 
       - name: Run clippy
-        uses: clechasseur/rs-clippy-check@v3
+        uses: clechasseur/rs-clippy-check@c624f914a0031ab286c106776f889357ba7e799a
         with:
           args: --workspace --all-targets ${{ matrix.all-features && '--all-features' || '' }} -- -D warnings
 
@@ -34,17 +34,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
 
       - name: Install Rust nightly with rustfmt
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@b113a30d27a8e59c969077c0a0168cc13dab5ffc
         with:
           toolchain: nightly
           components: rustfmt
           cache: false
 
       - name: Run Rustfmt
-        uses: clechasseur/rs-fmt-check@v2
+        uses: clechasseur/rs-fmt-check@e4f3eb51a38452b7963c14758a8f0f9ad52a84d4
         with:
           args: --all
 
@@ -59,31 +59,28 @@ jobs:
     runs-on: ${{ matrix.os }}-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
 
       - name: Install Rust nightly toolchain
         if: ${{ matrix.toolchain != 'nightly' }}
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@b113a30d27a8e59c969077c0a0168cc13dab5ffc
         with:
           toolchain: nightly
           cache: false
 
       - name: Install Rust toolchain ${{ matrix.toolchain }}
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@b113a30d27a8e59c969077c0a0168cc13dab5ffc
         with:
           toolchain: ${{ matrix.toolchain }}
           cache: false
 
-      - name: Install just
-        uses: extractions/setup-just@v1
-
-      - name: Install cargo-minimal-versions
-        uses: taiki-e/install-action@v2
+      - name: Install just and cargo-minimal-versions
+        uses: taiki-e/install-action@0dffe805566eb5f21aa682f9a43f6fbac7282dbe
         with:
-          tool: cargo-hack,cargo-minimal-versions
+          tool: just,cargo-hack,cargo-minimal-versions
 
       - name: Rust Cache
-        uses: Swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84
         with:
           prefix-key: v4-rust
           key: all-features-${{ matrix.all-features }}-msrv-cargo-files-${{ hashFiles('**/Cargo.*.msrv') }}
@@ -110,24 +107,26 @@ jobs:
     continue-on-error: ${{ matrix.experimental }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
 
       - name: Remove Cargo.lock
         if: ${{ matrix.ignore-lock }}
         run: rm Cargo.lock
 
       - name: Install Rust toolchain ${{ matrix.toolchain }}
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@b113a30d27a8e59c969077c0a0168cc13dab5ffc
         with:
           toolchain: ${{ matrix.toolchain }}
           cache: false
 
       - name: Install just
-        uses: extractions/setup-just@v1
+        uses: taiki-e/install-action@0dffe805566eb5f21aa682f9a43f6fbac7282dbe
+        with:
+          tool: just
 
       - name: Rust Cache
         if: ${{ !matrix.experimental }}
-        uses: Swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84
         with:
           prefix-key: v1-rust
           key: ignore-lock-${{ matrix.ignore-lock }}-all-features-${{ matrix.all-features }}
@@ -143,37 +142,37 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
 
       - name: Install Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@b113a30d27a8e59c969077c0a0168cc13dab5ffc
         with:
           toolchain: stable
           cache: false
 
       - name: Install cargo-tarpaulin
-        uses: taiki-e/install-action@v2
+        uses: taiki-e/install-action@0dffe805566eb5f21aa682f9a43f6fbac7282dbe
         with:
           tool: cargo-tarpaulin
 
       - name: Rust Cache
-        uses: Swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84
         with:
           cache-targets: false
 
       - name: Run cargo-tarpaulin
-        uses: clechasseur/rs-cargo@v2
+        uses: clechasseur/rs-cargo@7f70e375af32a065d31856c21fd53b638d38e057
         with:
           command: tarpaulin
 
       - name: Upload code coverage results to codecov.io
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@e0b68c6749509c5f83f984dd99a76a1c1a231044
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
 
       - name: Archive code coverage results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
         with:
           name: code-coverage-report
           path: |
@@ -194,20 +193,22 @@ jobs:
     continue-on-error: ${{ matrix.experimental }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
 
       - name: Install Rust toolchain ${{ matrix.toolchain }}
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@b113a30d27a8e59c969077c0a0168cc13dab5ffc
         with:
           toolchain: ${{ matrix.toolchain }}
           cache: false
 
       - name: Install just
-        uses: extractions/setup-just@v1
+        uses: taiki-e/install-action@0dffe805566eb5f21aa682f9a43f6fbac7282dbe
+        with:
+          tool: just
 
       - name: Rust Cache
         if: ${{ !matrix.experimental }}
-        uses: Swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84
         with:
           cache-targets: false
 
@@ -219,24 +220,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
 
       - name: Install Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
+        uses: actions-rust-lang/setup-rust-toolchain@b113a30d27a8e59c969077c0a0168cc13dab5ffc
         with:
           toolchain: stable
           cache: false
 
       - name: Install just
-        uses: extractions/setup-just@v1
+        uses: taiki-e/install-action@0dffe805566eb5f21aa682f9a43f6fbac7282dbe
+        with:
+          tool: just
 
       - name: Rust Cache
-        uses: Swatinem/rust-cache@v2
+        uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84
         with:
           cache-targets: false
 
       - name: Perform publish dry-run
-        uses: clechasseur/rs-cargo@v2
+        uses: clechasseur/rs-cargo@7f70e375af32a065d31856c21fd53b638d38e057
         with:
           command: publish
           args: --dry-run
