@@ -63,9 +63,7 @@
 #![deny(rustdoc::missing_crate_level_docs)]
 #![deny(rustdoc::broken_intra_doc_links)]
 #![deny(rustdoc::private_intra_doc_links)]
-#![cfg_attr(any(nightly_rustc, docsrs), feature(doc_cfg))]
 
-use derivative::Derivative;
 use wiremock::{Match, Request};
 
 /// Shorthand for [AndMatcher].
@@ -167,8 +165,7 @@ where
 /// # See also
 ///
 /// [and]
-#[derive(Derivative)]
-#[derivative(Debug(bound = "L: Match + std::fmt::Debug, R: Match + std::fmt::Debug"))]
+#[derive(Debug)]
 pub struct AndMatcher<L, R>(L, R)
 where
     L: Match,
@@ -237,8 +234,7 @@ where
 /// # See also
 ///
 /// [or]
-#[derive(Derivative)]
-#[derivative(Debug(bound = "L: Match + std::fmt::Debug, R: Match + std::fmt::Debug"))]
+#[derive(Debug)]
 pub struct OrMatcher<L, R>(L, R)
 where
     L: Match,
@@ -304,8 +300,7 @@ where
 /// # See also
 ///
 /// [xor]
-#[derive(Derivative)]
-#[derivative(Debug(bound = "L: Match + std::fmt::Debug, R: Match + std::fmt::Debug"))]
+#[derive(Debug)]
 pub struct XorMatcher<L, R>(L, R)
 where
     L: Match,
@@ -369,8 +364,7 @@ where
 /// # See also
 ///
 /// [not]
-#[derive(Derivative)]
-#[derivative(Debug(bound = "M: Match + std::fmt::Debug"))]
+#[derive(Debug)]
 pub struct NotMatcher<M>(M)
 where
     M: Match;

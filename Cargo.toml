@@ -1,8 +1,8 @@
 [package]
 name = "wiremock_logical_matchers"
-version = "0.5.1"
+version = "0.6.0"
 authors = [ "Charles Lechasseur <shiftingbeard@gmx.com>" ]
-edition = "2018"
+edition = "2021"
 rust-version = "1.68.2"
 
 readme = "README.md"
@@ -20,17 +20,11 @@ categories = [ "development-tools", "asynchronous" ]
 include = [ "src/**/*", "tests/**/*", "build.rs", "LICENSE", "README.md" ]
 
 [package.metadata.docs.rs]
-all-features = true
 targets = [ "x86_64-unknown-linux-gnu" ]
-rustc-args = [ "--cfg", "docsrs" ]
 
 [dependencies]
-derivative = "2.2.0"
-wiremock = "0.5.22"
+wiremock = "0.6.0"
 
 [dev-dependencies]
 reqwest = "0.11.24"
 tokio = { version = "1.36.0", features = ["full"] }
-
-[build-dependencies]
-rustc_version = "0.4.0"
