@@ -1,0 +1,5 @@
+[dependencies]
+log = "0.4.20"
+regex = "1.10.2"
+tokio = "1.36.0"
+tower-layer = "0.3.2"
