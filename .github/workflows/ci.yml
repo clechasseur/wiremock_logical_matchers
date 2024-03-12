@@ -22,10 +22,9 @@ jobs:
         with:
           toolchain: stable
           components: clippy
-          cache: false
 
       - name: Run clippy
-        uses: clechasseur/rs-clippy-check@c624f914a0031ab286c106776f889357ba7e799a
+        uses: clechasseur/rs-clippy-check@d76e9da3cd0e64868fdc27e2277268190cd3af59
         with:
           args: --workspace --all-targets ${{ matrix.all-features && '--all-features' || '' }} -- -D warnings
 
@@ -44,7 +43,7 @@ jobs:
           cache: false
 
       - name: Run Rustfmt
-        uses: clechasseur/rs-fmt-check@e4f3eb51a38452b7963c14758a8f0f9ad52a84d4
+        uses: clechasseur/rs-fmt-check@8fe30e561f794475f8eb680dd7131791a0f32c67
         with:
           args: --all
 
@@ -74,16 +73,16 @@ jobs:
           toolchain: ${{ matrix.toolchain }}
           cache: false
 
-      - name: Install just and cargo-minimal-versions
-        uses: taiki-e/install-action@0dffe805566eb5f21aa682f9a43f6fbac7282dbe
-        with:
-          tool: just,cargo-hack,cargo-minimal-versions
-
       - name: Rust Cache
         uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84
         with:
-          prefix-key: v4-rust
-          key: all-features-${{ matrix.all-features }}-msrv-cargo-files-${{ hashFiles('**/Cargo.*.msrv') }}
+          prefix-key: v5-rust
+          key: all-features-${{ matrix.all-features }}-msrv-pins-files-${{ hashFiles('**/msrv-pins.toml') }}
+
+      - name: Install required tools
+        uses: taiki-e/install-action@4abee32ddd6d3482e57ba21814317997e6268efe
+        with:
+          tool: just,cargo-hack,cargo-minimal-versions,cargo-msrv-prep
 
       - name: Run checks using cargo-minimal-versions
         run: just all_features=${{ matrix.all-features }} check-minimal
@@ -119,17 +118,17 @@ jobs:
           toolchain: ${{ matrix.toolchain }}
           cache: false
 
-      - name: Install just
-        uses: taiki-e/install-action@0dffe805566eb5f21aa682f9a43f6fbac7282dbe
-        with:
-          tool: just
-
       - name: Rust Cache
         if: ${{ !matrix.experimental }}
         uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84
         with:
           prefix-key: v1-rust
           key: ignore-lock-${{ matrix.ignore-lock }}-all-features-${{ matrix.all-features }}
+
+      - name: Install just
+        uses: taiki-e/install-action@4abee32ddd6d3482e57ba21814317997e6268efe
+        with:
+          tool: just
 
       - name: Run checks
         run: just all_features=${{ matrix.all-features }} check
@@ -138,6 +137,9 @@ jobs:
         run: just all_features=${{ matrix.all-features }} test
 
   tarpaulin:
+    # Note: there seems to be an issue in `cargo-tarpaulin` when using Rust 1.75.0 or later - it reports some missing line coverage.
+    # I've entered an issue: https://github.com/xd009642/tarpaulin/issues/1438
+    # In the meantime, let's pin the Rust version used for code coverage to 1.74.1 until we know what's happening.
     name: Code coverage
     runs-on: ubuntu-latest
     steps:
@@ -147,26 +149,26 @@ jobs:
       - name: Install Rust
         uses: actions-rust-lang/setup-rust-toolchain@b113a30d27a8e59c969077c0a0168cc13dab5ffc
         with:
-          toolchain: stable
+          toolchain: 1.74.1
           cache: false
-
-      - name: Install cargo-tarpaulin
-        uses: taiki-e/install-action@0dffe805566eb5f21aa682f9a43f6fbac7282dbe
-        with:
-          tool: cargo-tarpaulin
 
       - name: Rust Cache
         uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84
         with:
           cache-targets: false
 
+      - name: Install cargo-tarpaulin
+        uses: taiki-e/install-action@4abee32ddd6d3482e57ba21814317997e6268efe
+        with:
+          tool: cargo-tarpaulin
+
       - name: Run cargo-tarpaulin
-        uses: clechasseur/rs-cargo@7f70e375af32a065d31856c21fd53b638d38e057
+        uses: clechasseur/rs-cargo@801899018a9a4558d01dc74fe3943a6e2ae0f98c
         with:
           command: tarpaulin
 
       - name: Upload code coverage results to codecov.io
-        uses: codecov/codecov-action@e0b68c6749509c5f83f984dd99a76a1c1a231044
+        uses: codecov/codecov-action@54bcd8715eee62d40e33596ef5e8f0f48dbbccab
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
@@ -201,16 +203,16 @@ jobs:
           toolchain: ${{ matrix.toolchain }}
           cache: false
 
-      - name: Install just
-        uses: taiki-e/install-action@0dffe805566eb5f21aa682f9a43f6fbac7282dbe
-        with:
-          tool: just
-
       - name: Rust Cache
         if: ${{ !matrix.experimental }}
         uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84
         with:
           cache-targets: false
+
+      - name: Install just
+        uses: taiki-e/install-action@4abee32ddd6d3482e57ba21814317997e6268efe
+        with:
+          tool: just
 
       - name: Generate doc using rustdoc
         run: just doc
@@ -228,18 +230,13 @@ jobs:
           toolchain: stable
           cache: false
 
-      - name: Install just
-        uses: taiki-e/install-action@0dffe805566eb5f21aa682f9a43f6fbac7282dbe
-        with:
-          tool: just
-
       - name: Rust Cache
         uses: Swatinem/rust-cache@23bce251a8cd2ffc3c1075eaa2367cf899916d84
         with:
           cache-targets: false
 
       - name: Perform publish dry-run
-        uses: clechasseur/rs-cargo@7f70e375af32a065d31856c21fd53b638d38e057
+        uses: clechasseur/rs-cargo@801899018a9a4558d01dc74fe3943a6e2ae0f98c
         with:
           command: publish
           args: --dry-run
