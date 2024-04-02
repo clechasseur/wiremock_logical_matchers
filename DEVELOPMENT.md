@@ -4,7 +4,7 @@ This guide is meant for people wishing to contribute to this open-source project
 
 ### Rust
 
-You need at least **Rust 1.68.2** to build this project's code and run the tests. You can install Rust from the [official website](https://www.rust-lang.org/tools/install).
+You need at least **Rust 1.68.2** (_TODO validate this minimum version_) to build this project's code and run the tests. You can install Rust from the [official website](https://www.rust-lang.org/tools/install).
 If you already have a version of Rust installed via `rustup` but it's too old, you can update by running
 
 ```bash
@@ -96,4 +96,4 @@ Make sure any new public symbol is documented before submitting a PR.
 
 ## Questions?
 
-If any part of this documentation is unclear, please open a [new issue](https://github.com/clechasseur/wiremock_logical_matchers/issues/new/choose) so it can be fixed.
+If any part of this documentation is unclear, please open a [new issue](https://github.com/clechasseur/rust-template/issues/new/choose) so it can be fixed.

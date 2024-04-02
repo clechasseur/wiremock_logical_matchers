@@ -1,6 +1,9 @@
 name: CI
 
-on: [ push ]
+on:
+  # TODO re-enable once project is set up properly
+  #push:
+  workflow_dispatch:
 
 env:
   CI: 1
@@ -11,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        all-features: [ false ]
+        all-features: [ false ] # TODO if your crate has optional features, add 'true' to this list
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -52,9 +55,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        toolchain: [ 1.68.2 ]
+        toolchain: [ 1.60.0 ] # TODO: change for your minimum supported Rust version
         os: [ ubuntu, macos, windows ]
-        all-features: [ false ]
+        all-features: [ false ] # TODO if your crate has optional features, add 'true' to this list
     runs-on: ${{ matrix.os }}-latest
     steps:
       - name: Checkout code
@@ -80,7 +83,7 @@ jobs:
           key: all-features-${{ matrix.all-features }}-msrv-pins-files-${{ hashFiles('**/msrv-pins.toml') }}
 
       - name: Install required tools
-        uses: taiki-e/install-action@4abee32ddd6d3482e57ba21814317997e6268efe
+        uses: taiki-e/install-action@b43c846230df0999d45aeecdc72be153a7985695
         with:
           tool: just,cargo-hack,cargo-minimal-versions,cargo-msrv-prep
 
@@ -92,10 +95,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        toolchain: [ 1.68.2, stable, beta, nightly ]
+        toolchain: [ 1.68.2, stable, beta, nightly ] # TODO: change 1.68.2 for your minimum supported Rust version
         os: [ ubuntu, macos, windows ]
         ignore-lock: [ false, true ]
-        all-features: [ false ]
+        all-features: [ false ] # TODO if your crate has optional features, add 'true' to this list
         include:
           - experimental: false
           - toolchain: beta
@@ -126,7 +129,7 @@ jobs:
           key: ignore-lock-${{ matrix.ignore-lock }}-all-features-${{ matrix.all-features }}
 
       - name: Install just
-        uses: taiki-e/install-action@4abee32ddd6d3482e57ba21814317997e6268efe
+        uses: taiki-e/install-action@b43c846230df0999d45aeecdc72be153a7985695
         with:
           tool: just
 
@@ -158,7 +161,7 @@ jobs:
           cache-targets: false
 
       - name: Install cargo-tarpaulin
-        uses: taiki-e/install-action@4abee32ddd6d3482e57ba21814317997e6268efe
+        uses: taiki-e/install-action@b43c846230df0999d45aeecdc72be153a7985695
         with:
           tool: cargo-tarpaulin
 
@@ -168,7 +171,7 @@ jobs:
           command: tarpaulin
 
       - name: Upload code coverage results to codecov.io
-        uses: codecov/codecov-action@54bcd8715eee62d40e33596ef5e8f0f48dbbccab
+        uses: codecov/codecov-action@c16abc29c95fcf9174b58eb7e1abf4c866893bc8
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
@@ -210,7 +213,7 @@ jobs:
           cache-targets: false
 
       - name: Install just
-        uses: taiki-e/install-action@4abee32ddd6d3482e57ba21814317997e6268efe
+        uses: taiki-e/install-action@b43c846230df0999d45aeecdc72be153a7985695
         with:
           tool: just
 

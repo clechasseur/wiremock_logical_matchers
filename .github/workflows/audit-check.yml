@@ -1,9 +1,10 @@
 name: Security audit
 
 on:
-  push:
-  schedule:
-    - cron: '0 0 * * *'
+  # TODO re-enable once project is set up properly
+  #push:
+  #schedule:
+  #  - cron: '0 0 * * *'
   workflow_dispatch:
 
 jobs:
