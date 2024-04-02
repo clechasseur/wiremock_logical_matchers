@@ -1,0 +1,21 @@
+name: Sync template repository changes
+
+on:
+  schedule:
+    - cron: '0 0 * * 1' # Once per week, at noon on Monday
+  workflow_dispatch:
+
+jobs:
+  sync-from-template:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+
+      - name: Sync changes from clechasseur/rust-template
+        uses: AndreasAugustin/actions-template-sync@f4a0a81b046834f23edc491562f8e50ce9199dfb
+        with:
+          source_repo_path: clechasseur/rust-template
