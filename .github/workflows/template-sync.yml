@@ -9,12 +9,13 @@ jobs:
   sync-from-template:
     runs-on: ubuntu-latest
     permissions:
-      actions: write
       contents: write
       pull-requests: write
     steps:
       - name: Checkout code
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
 
       - name: Sync changes from clechasseur/rust-template
         uses: AndreasAugustin/actions-template-sync@f4a0a81b046834f23edc491562f8e50ce9199dfb
