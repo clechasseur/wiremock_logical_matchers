@@ -27,7 +27,7 @@ mod and_matcher_tests {
             .await;
 
         let status_ok = Client::new()
-            .get(&mock_server.uri())
+            .get(mock_server.uri())
             .header("x-for-testing-purposes", "42")
             .query(&[("page", "1")])
             .send()
@@ -36,7 +36,7 @@ mod and_matcher_tests {
             .status();
 
         let status_not_found = Client::new()
-            .get(&mock_server.uri())
+            .get(mock_server.uri())
             .header("x-for-testing-purposes", "42")
             .send()
             .await
@@ -44,7 +44,7 @@ mod and_matcher_tests {
             .status();
 
         let status_also_not_found = Client::new()
-            .get(&mock_server.uri())
+            .get(mock_server.uri())
             .query(&[("page", "1")])
             .send()
             .await
@@ -52,7 +52,7 @@ mod and_matcher_tests {
             .status();
 
         let status_also_also_not_found = Client::new()
-            .get(&mock_server.uri())
+            .get(mock_server.uri())
             .send()
             .await
             .unwrap()
@@ -90,7 +90,7 @@ mod or_matcher_tests {
             .await;
 
         let status_ok = Client::new()
-            .get(&mock_server.uri())
+            .get(mock_server.uri())
             .header("x-for-testing-purposes", "42")
             .send()
             .await
@@ -98,7 +98,7 @@ mod or_matcher_tests {
             .status();
 
         let status_also_ok = Client::new()
-            .get(&mock_server.uri())
+            .get(mock_server.uri())
             .query(&[("page", "1")])
             .send()
             .await
@@ -106,7 +106,7 @@ mod or_matcher_tests {
             .status();
 
         let status_also_also_ok = Client::new()
-            .get(&mock_server.uri())
+            .get(mock_server.uri())
             .header("x-for-testing-purposes", "42")
             .query(&[("page", "1")])
             .send()
@@ -115,7 +115,7 @@ mod or_matcher_tests {
             .status();
 
         let status_not_found = Client::new()
-            .get(&mock_server.uri())
+            .get(mock_server.uri())
             .send()
             .await
             .unwrap()
@@ -153,7 +153,7 @@ mod xor_matcher_tests {
             .await;
 
         let status_ok = Client::new()
-            .get(&mock_server.uri())
+            .get(mock_server.uri())
             .header("x-for-testing-purposes", "42")
             .send()
             .await
@@ -161,7 +161,7 @@ mod xor_matcher_tests {
             .status();
 
         let status_also_ok = Client::new()
-            .get(&mock_server.uri())
+            .get(mock_server.uri())
             .query(&[("page", "1")])
             .send()
             .await
@@ -169,7 +169,7 @@ mod xor_matcher_tests {
             .status();
 
         let status_not_found = Client::new()
-            .get(&mock_server.uri())
+            .get(mock_server.uri())
             .header("x-for-testing-purposes", "42")
             .query(&[("page", "1")])
             .send()
@@ -178,7 +178,7 @@ mod xor_matcher_tests {
             .status();
 
         let status_also_not_found = Client::new()
-            .get(&mock_server.uri())
+            .get(mock_server.uri())
             .send()
             .await
             .unwrap()
@@ -216,14 +216,14 @@ mod not_matcher_tests {
             .await;
 
         let status_ok = Client::new()
-            .get(&mock_server.uri())
+            .get(mock_server.uri())
             .send()
             .await
             .unwrap()
             .status();
 
         let status_not_found = Client::new()
-            .get(&mock_server.uri())
+            .get(mock_server.uri())
             .header("x-for-testing-purposes", "42")
             .send()
             .await
@@ -261,7 +261,7 @@ mod multi_matcher_tests {
         .await;
 
         let status_ok = Client::new()
-            .get(&mock_server.uri())
+            .get(mock_server.uri())
             .header("x-bypass", "true")
             .send()
             .await
@@ -269,7 +269,7 @@ mod multi_matcher_tests {
             .status();
 
         let status_also_ok = Client::new()
-            .get(&mock_server.uri())
+            .get(mock_server.uri())
             .header("x-for-testing-purposes", "42")
             .query(&[("page", "1")])
             .send()
