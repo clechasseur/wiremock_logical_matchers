@@ -26,5 +26,5 @@ targets = [ "x86_64-unknown-linux-gnu" ]
 wiremock = "0.6.1"
 
 [dev-dependencies]
-reqwest = "0.12.5"
+reqwest = "0.12.7"
 tokio = { version = "1.39.3", features = ["full"] }
