@@ -23,7 +23,7 @@ include = [ "src/**/*", "tests/**/*", "build.rs", "LICENSE", "README.md" ]
 targets = [ "x86_64-unknown-linux-gnu" ]
 
 [dependencies]
-wiremock = "0.6.1"
+wiremock = "0.6.2"
 
 [dev-dependencies]
 reqwest = "0.12.7"
