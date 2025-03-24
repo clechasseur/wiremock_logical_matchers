@@ -25,7 +25,7 @@ jobs:
           cache: false
 
       - name: Rust Cache
-        uses: Swatinem/rust-cache@f0deed1e0edfc6a9be95417288c0e1099b1eeec3 # v2.7.7
+        uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # v2.7.8
         with:
           prefix-key: v1-rust
           key: all-features-${{ matrix.all-features }}
@@ -75,7 +75,7 @@ jobs:
           cache: false
 
       - name: Rust Cache
-        uses: Swatinem/rust-cache@f0deed1e0edfc6a9be95417288c0e1099b1eeec3 # v2.7.7
+        uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # v2.7.8
         with:
           prefix-key: v7-rust
           key: all-features-${{ matrix.all-features }}-msrv-pins-files-${{ hashFiles('**/msrv-pins.toml') }}
@@ -127,7 +127,7 @@ jobs:
 
       - name: Rust Cache
         if: ${{ !matrix.experimental }}
-        uses: Swatinem/rust-cache@f0deed1e0edfc6a9be95417288c0e1099b1eeec3 # v2.7.7
+        uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # v2.7.8
         with:
           prefix-key: v2-rust
           key: ignore-lock-${{ matrix.ignore-lock }}-all-features-${{ matrix.all-features }}
@@ -160,7 +160,7 @@ jobs:
           cache: false
 
       - name: Rust Cache
-        uses: Swatinem/rust-cache@f0deed1e0edfc6a9be95417288c0e1099b1eeec3 # v2.7.7
+        uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # v2.7.8
         with:
           prefix-key: v2-rust
           cache-targets: false
@@ -216,7 +216,7 @@ jobs:
 
       - name: Rust Cache
         if: ${{ !matrix.experimental }}
-        uses: Swatinem/rust-cache@f0deed1e0edfc6a9be95417288c0e1099b1eeec3 # v2.7.7
+        uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # v2.7.8
         with:
           prefix-key: v2-rust
           cache-targets: false
@@ -246,7 +246,7 @@ jobs:
           cache: false
 
       - name: Rust Cache
-        uses: Swatinem/rust-cache@f0deed1e0edfc6a9be95417288c0e1099b1eeec3 # v2.7.7
+        uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # v2.7.8
         with:
           prefix-key: v2-rust
           cache-targets: false
