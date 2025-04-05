@@ -56,14 +56,12 @@ jobs:
           args: --all
 
   msrv-check:
-    name: MSRV check of ${{ matrix.package }} for Rust ${{ matrix.toolchain }} on ${{ matrix.os }}
+    name: MSRV check for Rust ${{ matrix.toolchain }} on ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        package: [ "wiremock_logical_matchers" ]
         os: [ ubuntu-24.04, macos-14, windows-2022 ]
-        include:
-          - toolchain: 1.68.2
+        toolchain: [ 1.68.2 ]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout code
@@ -78,8 +76,8 @@ jobs:
       - name: Rust Cache
         uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # v2.7.8
         with:
-          prefix-key: v9-rust
-          key: package-${{ matrix.package }}-msrv-pins-files-${{ hashFiles('**/msrv-pins.toml') }}
+          prefix-key: v10-rust
+          key: msrv-pins-files-${{ hashFiles('**/msrv-pins.toml') }}
           cache-on-failure: true
 
       - name: Install required tools
@@ -90,7 +88,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run checks using cargo-minimal-versions
-        run: just toolchain=${{ matrix.toolchain }} package=${{ matrix.package }} check-minimal
+        run: just toolchain=${{ matrix.toolchain }} check-minimal
 
   build:
     name: Build for Rust ${{ matrix.toolchain }}${{ matrix.experimental && ' (experimental)' || '' }} on ${{ matrix.os }}${{ matrix.ignore-lock && ' without Cargo.lock' || '' }}
@@ -146,51 +144,43 @@ jobs:
       - name: Run tests
         run: just test
 
-  tarpaulin:
-    name: Code coverage
+  llvm-cov:
+    name: Code coverage with llvm-cov
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-      - name: Install Rust
+      - name: Install Rust nightly
         uses: actions-rust-lang/setup-rust-toolchain@9399c7bb15d4c7d47b27263d024f0a4978346ba4 # v1.11.0
         with:
-          toolchain: stable
+          toolchain: nightly
           cache: false
 
-      - name: Rust Cache
-        uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # v2.7.8
-        with:
-          prefix-key: v2-rust
-          cache-targets: false
-          cache-on-failure: true
-
-      - name: Install cargo-tarpaulin
+      - name: Install required tools
         uses: taiki-e/install-action@575f713d0233afba556737a7b85080563be14186 # v2.49.43
         with:
-          tool: cargo-tarpaulin
+          tool: just,cargo-llvm-cov
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run cargo-tarpaulin
-        uses: clechasseur/rs-cargo@319e211e9459c5e531afb6d157296765b441572e # v3.0.3
-        with:
-          command: tarpaulin
+      - name: Run cargo-llvm-cov
+        run: just llvm-cov
 
       - name: Upload code coverage results to codecov.io
         uses: codecov/codecov-action@0565863a31f2c772f9f0395002a31e3f06189574 # v5.4.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          files: codecov.json
           fail_ci_if_error: true
 
       - name: Archive code coverage results
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: code-coverage-report
+          name: llvm-cov-code-coverage-report
           path: |
-            cobertura.xml
-            tarpaulin-report.html
+            codecov.json
+            target/llvm-cov/html/
 
   doc:
     name: Rustdoc check for Rust ${{ matrix.toolchain }}${{ matrix.experimental && ' (experimental)' || '' }}
