@@ -76,7 +76,7 @@ Required checks will not pass if either of those report issues.
 
 ### Code coverage
 
-This project's [code coverage settings](codecov.yml) are pretty stringent and require **100% coverage**. To validate this locally, you can run
+This project's [code coverage settings](codecov.yml) are pretty stringent. To validate this locally, you can run
 
 ```bash
 just tarpaulin
