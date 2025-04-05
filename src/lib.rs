@@ -178,12 +178,6 @@ where
 {
     /// Creates a new `AND` matcher with the two given submatchers.
     ///
-    /// # Arguments
-    ///
-    /// - `left_matcher` - First submatcher that must accept the request.
-    /// - `right_matcher` - Second submatcher that must accept the request.
-    ///                     Called only if the first submatcher also accepts the request.
-    ///
     /// # See also
     ///
     /// [and]
@@ -247,12 +241,6 @@ where
 {
     /// Creates a new `OR` matcher with the two given submatchers.
     ///
-    /// # Arguments
-    ///
-    /// - `left_matcher` - First submatcher that can accept the request.
-    /// - `right_matcher` - Second submatcher that can accept the request.
-    ///                     Called only if the first submatcher does not accept the request.
-    ///
     /// # See also
     ///
     /// [or]
@@ -313,11 +301,6 @@ where
 {
     /// Creates a new `XOR` (exclusive `OR`) matcher with the two given submatchers.
     ///
-    /// # Arguments
-    ///
-    /// - `left_matcher` - First submatcher that can accept the request.
-    /// - `right_matcher` - Second submatcher that can accept the request.
-    ///
     /// # See also
     ///
     /// [xor]
@@ -374,10 +357,6 @@ where
     M: Match,
 {
     /// Creates a new `NOT` matcher with the given submatcher.
-    ///
-    /// # Arguments
-    ///
-    /// - `matcher` - Submatcher that must not accept the request.
     ///
     /// # See also
     ///
