@@ -13,13 +13,13 @@ rustup update
 
 ### Rust nightly
 
-In order to run `rustfmt`, you will need a Nightly Rust toolset. If you do not have one installed, you can install one via `rustup` by running
+Certain tools require a Nightly Rust toolset. If you do not have one installed, you can install one via `rustup` by running
 
 ```bash
 rustup toolchain install nightly
 ```
 
-If you already have one installed but it was too old, it was probably updated earlier when you ran `rustup update` 😉
+If you already have one installed, but it was too old, it was probably updated earlier when you ran `rustup update` 😉
 
 ### Just
 
