@@ -68,7 +68,7 @@ mod and_matcher_tests {
     fn test_debug_impl() {
         let matcher = AndMatcher::new(DebugMatcher, DebugMatcher);
 
-        assert!(!format!("{:?}", matcher).is_empty());
+        assert!(!format!("{matcher:?}").is_empty());
     }
 }
 
@@ -131,7 +131,7 @@ mod or_matcher_tests {
     fn test_debug_impl() {
         let matcher = OrMatcher::new(DebugMatcher, DebugMatcher);
 
-        assert!(!format!("{:?}", matcher).is_empty());
+        assert!(!format!("{matcher:?}").is_empty());
     }
 }
 
@@ -194,7 +194,7 @@ mod xor_matcher_tests {
     fn test_debug_impl() {
         let matcher = XorMatcher::new(DebugMatcher, DebugMatcher);
 
-        assert!(!format!("{:?}", matcher).is_empty());
+        assert!(!format!("{matcher:?}").is_empty());
     }
 }
 
@@ -238,7 +238,7 @@ mod not_matcher_tests {
     fn test_debug_impl() {
         let matcher = NotMatcher::new(DebugMatcher);
 
-        assert!(!format!("{:?}", matcher).is_empty());
+        assert!(!format!("{matcher:?}").is_empty());
     }
 }
 
