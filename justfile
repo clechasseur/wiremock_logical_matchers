@@ -4,7 +4,7 @@ toolchain := ""
 tool := "cargo"
 
 cargo := tool + (if toolchain != "" { " +" + toolchain } else { "" })
-cargo_nightly := cargo + " +nightly"
+cargo_nightly := tool + " +nightly"
 cargo_hack := cargo + " hack"
 cargo_tarpaulin := cargo + " tarpaulin"
 cargo_llvm_cov := cargo_nightly + " llvm-cov"
@@ -154,11 +154,11 @@ test-package *extra_args:
 
 # Run `cargo msrv-prep`
 prep *extra_args:
-    {{cargo}} msrv-prep {{package_flag}} --backup-root-manifest {{force_prep_flag}} {{extra_args}}
+    {{cargo_nightly}} msrv-prep {{package_flag}} --backup-root-manifest {{force_prep_flag}} {{extra_args}}
 
 # Run `cargo msrv-unprep`
 unprep *extra_args:
-    {{cargo}} msrv-unprep {{package_flag}} --backup-root-manifest {{extra_args}}
+    {{cargo_nightly}} msrv-unprep {{package_flag}} --backup-root-manifest {{extra_args}}
 
 # ----- Utilities -----
 
