@@ -16,13 +16,13 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Install Rust
-        uses: actions-rust-lang/setup-rust-toolchain@a0b538fa0b742a6aa35d6e2c169b4bd06d225a98 # v1.15.3
+        uses: actions-rust-lang/setup-rust-toolchain@150fca883cd4034361b621bd4e6a9d34e5143606 # v1.15.4
         with:
           toolchain: stable
           cache: false
 
       - name: Rust Cache
-        uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2.8.2
+        uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
         with:
           cache-on-failure: true
 
@@ -31,7 +31,7 @@ jobs:
         id: auth
 
       - name: Publish package
-        uses: clechasseur/rs-cargo@8973b6d717dedfd737e3b60c5dcf5524684d38fd # v5.0.0
+        uses: clechasseur/rs-cargo@v5.0.2
         with:
           command: publish
         env:
