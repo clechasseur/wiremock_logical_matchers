@@ -96,7 +96,7 @@ Make sure coverage is at the required level before submitting a PR.
 
 ### Generating documentation
 
-All public symbols in the crate need to be documented, otherwise checks won't pass.
+All public symbols in the project need to be documented, otherwise checks won't pass.
 To validate this, you can generate docs locally by running
 
 ```shell
