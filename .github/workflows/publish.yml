@@ -14,7 +14,7 @@ jobs:
       id-token: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Install Rust
         uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659 # v1.17.0
@@ -22,17 +22,16 @@ jobs:
           toolchain: stable
           cache: false
 
-
       - name: Setup cargo-binstall
-        uses: cargo-bins/cargo-binstall@v1.17.9
+        uses: cargo-bins/cargo-binstall@v1.21.1
         with:
-          version: v1.17.9
+          version: v1.21.1
 
       - name: Install required tools
-        uses: clechasseur/rs-cargo@v5.0.6
+        uses: clechasseur/rs-cargo@v5.0.8
         with:
           command: binstall
-          args: -y just@1.48.1
+          args: -y just@1.58.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
